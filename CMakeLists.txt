@@ -17,11 +17,13 @@ FetchContent_MakeAvailable(SFML)
 add_library(common INTERFACE)
 target_compile_features(common INTERFACE cxx_std_17)
 target_compile_options(common INTERFACE
-  $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>: -Wall>
-  $<$<CXX_COMPILER_ID:MSVC>: /W4>
+  $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:-Wall>
+  $<$<CXX_COMPILER_ID:MSVC>:/W4>
 )
 
+# Collect all .cpp files in src/
+file(GLOB SRC_FILES CONFIGURE_DEPENDS src/*.cpp)
 
 # blockbreaker
-add_executable(blockbreaker blockbreaker.cpp)
-target_link_libraries(blockbreaker PRIVATE SFML::Graphics common)
+add_executable(main ${SRC_FILES})
+target_link_libraries(main PRIVATE SFML::Graphics common)
