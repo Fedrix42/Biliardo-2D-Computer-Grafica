@@ -1,41 +1,47 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <csignal>
+#include <atomic>
 #include "main.h"
-#include "paddle.h"
-#include "ball.h"
 #include "state.h"
+#include "events.h"
 
-//////////
-// Loop //
-//////////
+std::atomic<bool> termination_signal_receive(false);
 
+void signal_handler(int) {
+    termination_signal_receive = true; 
+}
 
 int main(){
-    State* state = new State(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
+    std::signal(SIGINT, signal_handler);
+    std::signal(SIGTERM, signal_handler);
+    State state = State(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
     sf::RenderWindow window (sf::VideoMode ({DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT}), WINDOW_TITLE);
     window.setMinimumSize(window.getSize());
-    sf::Clock clock;
-    clock.start();
-    sf::Time last = clock.getElapsedTime();
-    while (window.isOpen())
-    {
-        // events
-        /*
-        window.handleEvents (
-            [&window](const sf::Event::Closed&) { handle_close (window); },
-            [&window](const sf::Event::Resized& event) { handle_resize (event, window); },
-            [&window](const sf::Event::KeyPressed& event) { handle_movement (event, window); }
-        );*/
-        
-        // display
-        window.clear (sf::Color::Black);
-        
-        if(clock.getElapsedTime().asMilliseconds() - last.asMilliseconds() > 16){ // 60 fps
-            state->ball->move(window);
-            last = clock.getElapsedTime();
-        }
-        state->draw(window);
 
+    while (window.isOpen() && !termination_signal_receive){
+        while (const std::optional event_opt = window.pollEvent()){
+            if (event_opt->is<sf::Event::Closed>()){
+                handle_close(window, state);
+            } else if (const auto* event = event_opt->getIf<sf::Event::KeyPressed>()){
+                handle_key_pressed(event, window, state);
+            } else if (const auto* event = event_opt->getIf<sf::Event::KeyReleased>()){
+                handle_key_released(event, window, state);
+            } else if (const auto* event = event_opt->getIf<sf::Event::MouseButtonPressed>()){
+                handle_mouse_pressed(event, window, state);
+            } else if (const auto* event = event_opt->getIf<sf::Event::MouseButtonReleased>()){
+                handle_mouse_released(event, window, state);
+            } else if (const auto* event = event_opt->getIf<sf::Event::MouseMoved>()){
+                handle_mouse_moved(event, window, state);
+            } else if (const auto* event = event_opt->getIf<sf::Event::MouseWheelScrolled>()){
+                handle_mouse_wheel_scrolled(event, window, state);
+            } else if (const auto* event = event_opt->getIf<sf::Event::TextEntered>()){
+                handle_text_entered(event, window, state);
+            } 
+        }
+        
+        window.clear (sf::Color::Black);
+        state.draw(window);
         window.display ();
     }
 }

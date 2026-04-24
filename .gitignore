@@ -1,2 +1,6 @@
-*build*
-.DS_STORE
+build
+out
+.cache
+.idea
+.vs
+.vscode

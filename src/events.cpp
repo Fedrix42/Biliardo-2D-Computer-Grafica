@@ -1,38 +1,35 @@
-/*
-#include <SFML/Graphics.hpp>
+#include "events.h"
 
-void handle_close (sf::RenderWindow& window)
-{
+// Window events
+void handle_close(sf::RenderWindow& window, State& state){
     window.close();
 }
-void handle_resize (const sf::Event::Resized& resized, sf::RenderWindow& window)
-{   // constrain aspect ratio and map always the same portion of the world
-    float aspect = static_cast<float>(window_width)/static_cast<float>(window_height);
-    sf::Vector2u ws = resized.size;
-    float new_aspect = static_cast<float>(ws.x)/static_cast<float>(ws.y);
-    if (new_aspect < aspect)
-        ws = {ws.x,static_cast<unsigned>(ws.x/aspect)};
-        else
-        ws = {static_cast<unsigned>(ws.y*aspect),ws.y};
-    window.setSize(ws);
+void handle_resize (const sf::Event::Resized& resized, sf::RenderWindow& window){
+
 }
 
-void handle_movement(const sf::Event::KeyPressed& pressed, sf::RenderWindow& window){
-    auto window_size = window.getSize();
-    int pixel_movement = compute_relative_speed(PADDLE_SPEED, window_size.y);
-    switch(pressed.code){
-        case (sf::Keyboard::Key::Left):
-            if(state.paddle.pos.x > 0 + paddle_size.x / 2){
-                state.paddle.pos.x -= pixel_movement; 
-            }
-            break;
+// Keyboard events
+void handle_key_pressed(const sf::Event::KeyPressed* pressed, sf::RenderWindow& window, State& state){
 
-        case (sf::Keyboard::Key::Right):
-            if(state.paddle.pos.x < window_size.x + paddle_size.x / 2){
-                state.paddle.pos.x += pixel_movement;
-            }
-            break;
-        default:
-            break;
-    }
-}*/
+}
+void handle_key_released(const sf::Event::KeyReleased* released, sf::RenderWindow& window, State& state){
+
+}
+
+void handle_text_entered(const sf::Event::TextEntered* text_entered, sf::RenderWindow& window, State& state){
+
+}
+
+// Mouse Events
+void handle_mouse_pressed(const sf::Event::MouseButtonPressed* pressed, sf::RenderWindow& window, State& state){
+
+}
+void handle_mouse_released(const sf::Event::MouseButtonReleased* released, sf::RenderWindow& window, State& state){
+
+}
+void handle_mouse_moved(const sf::Event::MouseMoved* moved, sf::RenderWindow& window, State& state){
+
+}
+void handle_mouse_wheel_scrolled(const sf::Event::MouseWheelScrolled* wheel_scrolled, sf::RenderWindow& window, State& state){
+
+}
