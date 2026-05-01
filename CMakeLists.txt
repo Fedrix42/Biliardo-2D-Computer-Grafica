@@ -21,9 +21,7 @@ target_compile_options(common INTERFACE
   $<$<CXX_COMPILER_ID:MSVC>:/W4>
 )
 
-# Collect all .cpp files in src/
-file(GLOB SRC_FILES CONFIGURE_DEPENDS src/*.cpp)
 
-# blockbreaker
-add_executable(main ${SRC_FILES})
-target_link_libraries(main PRIVATE SFML::Graphics common)
+file(GLOB_RECURSE SRC_TAPPA01 CONFIGURE_DEPENDS Tappa01/*.cpp)
+add_executable(Tappa01 ${SRC_TAPPA01})
+target_link_libraries(Tappa01 PRIVATE SFML::Graphics common)
