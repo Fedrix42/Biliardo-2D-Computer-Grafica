@@ -1,8 +1,8 @@
 #include "state.h"
 
-GameState::GameState(Gamemode mode)
+GameState::GameState(Gamemode mode, sf::Vector2u window_size)
+    : table(window_size, { 0, 0 })
 {
-    this->table = Table();
 }
 
 void GameState::draw(sf::RenderWindow& window)

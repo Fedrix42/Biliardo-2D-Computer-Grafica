@@ -3,18 +3,6 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
-class BallView {
-public:
-    BallView();
-    ~BallView() = default;
-    void draw(sf::RenderWindow& window);
-
-private:
-    sf::Vector2f position;
-    sf::CircleShape shape;
-    sf::Texture texture; // Sarà basato sull'id della pallina
-};
-
 /*
 Ball ID:
 | 1 - 7 Smooth
@@ -33,15 +21,15 @@ enum BallID {
 
 class Ball {
 public:
-    Ball() = default;
-    Ball(unsigned id);
-    ~Ball() = default;
+    Ball(unsigned id, float pocket_radius);
     void draw(sf::RenderWindow& window);
 
 private:
-    void compute_position();
+    bool is_smooth();
+    bool is_striped();
     unsigned id;
-    BallView view;
+    sf::CircleShape shape;
+    sf::Texture texture; // Sarà basato sull'id della pallina
     double weight = 0.200; // 0.200 kg
     sf::Vector2f speed; // m/s
 };

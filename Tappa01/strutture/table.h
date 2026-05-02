@@ -3,55 +3,44 @@
 #include "ball.h"
 #include <SFML/Graphics.hpp>
 #include <vector>
-
-class PocketView {
-public:
-    PocketView();
-    ~PocketView() = default;
-    void draw(sf::RenderWindow& window);
-
-private:
-    sf::Vector2f position; // Rispetto al tavolo
-    sf::CircleShape shape;
-    sf::Texture texture;
-};
+#include "../assetmgr.h"
 
 class Pocket { // Buca
 public:
-    Pocket(unsigned id);
-    ~Pocket() = default;
+    Pocket(unsigned id, sf::Vector2u table_size);
     void draw(sf::RenderWindow& window);
+    sf::Vector2f getPosition();
+    float getRadius();
 
 private:
-    PocketView view;
+    unsigned id;
+    sf::CircleShape shape;
+    std::vector<Ball> balls;
 };
 
-class TableView {
+class TableWall {
 public:
-    TableView();
-    ~TableView() = default;
+    TableWall(unsigned id, Pocket left, Pocket right, sf::Vector2f direction);
     void draw(sf::RenderWindow& window);
 
 private:
-    sf::Vector2f position;
-    sf::RectangleShape shape;
-    sf::Texture texture;
+    unsigned id;
+    sf::ConvexShape shape;
 };
 
 class Table {
 public:
-    Table();
-    ~Table() = default;
+    Table(sf::Vector2u window_size, sf::Vector2i offsets);
     void draw(sf::RenderWindow& window);
 
 private:
+    // Posizione del tavolo
     sf::Vector2f offset;
-    TableView view;
-    std::vector<Pocket> pockets;
-    std::vector<Ball> smooth;
-    std::vector<Ball> striped;
-    Ball black;
-    Ball white;
+    // Textures usate (unico caricamento per tipo)
+    sf::RectangleShape shape;
+    std::vector<Pocket> pockets; // Buche
+    std::vector<TableWall> walls; // Muri
+    std::vector<Ball> balls;
 };
 
 #endif

@@ -17,10 +17,10 @@ int main()
 {
     std::signal(SIGINT, signal_handler);
     std::signal(SIGTERM, signal_handler);
-    GameState state = GameState(Gamemode::SINGLE_PLAYER);
+    GameState state = GameState(Gamemode::SINGLE_PLAYER, { DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT });
     sf::RenderWindow window(sf::VideoMode({ DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT }), WINDOW_TITLE);
     window.setMinimumSize(window.getSize());
-
+    window.setFramerateLimit(140);
     while (window.isOpen() && !termination_signal_receive) {
         while (const std::optional event_opt = window.pollEvent()) {
             if (event_opt->is<sf::Event::Closed>()) {

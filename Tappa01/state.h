@@ -10,7 +10,7 @@ enum Gamemode {
 
 class GameState {
 public:
-    GameState(Gamemode mode);
+    GameState(Gamemode mode, sf::Vector2u window_size);
     void draw(sf::RenderWindow& window);
 
 private:
