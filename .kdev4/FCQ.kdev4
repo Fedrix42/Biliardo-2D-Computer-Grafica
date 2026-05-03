@@ -21,7 +21,7 @@ Launch Configurations=Launch Configuration 0
 [Launch][Launch Configuration 0]
 Configured Launch Modes=execute
 Configured Launchers=nativeAppLauncher
-Name=Tappa01
+Name=Tappa02
 Type=Native Application
 
 [Launch][Launch Configuration 0][Data]
@@ -29,13 +29,13 @@ Arguments=
 Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
 Dependency Action=Nothing
 EnvironmentGroup=
-Executable=file:///home/fedrix/Desktop/Repo/FCQ
+Executable=file:///home/fedrix/Desktop/Repo/FCQ/build/Tappa03
 External Terminal=konsole --noclose --workdir %workdir -e %exe
 Kill Before Executing Again=4194304
-Project Target=FCQ,Tappa01
+Project Target=FCQ,Tappa03
 Use External Terminal=false
 Working Directory=file:///home/fedrix/Desktop/Repo/FCQ
-isExecutable=false
+isExecutable=true
 
 [Project]
 VersionControlSupport=kdevgit

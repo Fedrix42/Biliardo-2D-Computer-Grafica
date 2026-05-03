@@ -24,7 +24,16 @@ target_compile_options(common INTERFACE
   $<$<CXX_COMPILER_ID:MSVC>:/W4>
 )
 
-
 file(GLOB_RECURSE SRC_TAPPA01 CONFIGURE_DEPENDS Tappa01/*.cpp)
 add_executable(Tappa01 ${SRC_TAPPA01})
 target_link_libraries(Tappa01 PRIVATE SFML::Graphics common)
+
+
+file(GLOB_RECURSE SRC_TAPPA02 CONFIGURE_DEPENDS Tappa02/*.cpp)
+add_executable(Tappa02 ${SRC_TAPPA02})
+target_link_libraries(Tappa02 PRIVATE SFML::Graphics common)
+
+file(GLOB_RECURSE SRC_TAPPA03 CONFIGURE_DEPENDS Tappa03/*.cpp)
+add_executable(Tappa03 ${SRC_TAPPA03})
+target_link_libraries(Tappa03 PRIVATE SFML::Graphics common)
+
