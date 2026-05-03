@@ -35,7 +35,17 @@ bool Ball::is_striped(){
     return (id >= BallIDRange::STRIPED_START && id <= BallIDRange::STRIPED_STOP);
 }
 
+void Ball::update(sf::Time time){
+    shape.setPosition(shape.getPosition() + speed * time.asSeconds());
+    //speed = speed / 10.0f; // Decellerazione costante (temporanea)
+}
+
 void Ball::draw(sf::RenderWindow& window)
 {
     window.draw(shape);
+}
+
+float Ball::getMass()
+{
+    return weight;
 }

@@ -24,14 +24,16 @@ public:
     Ball(unsigned id, float pocket_radius);
     void draw(sf::RenderWindow& window);
     sf::Vector2f getPosition();
+    void update(sf::Time time);
     float getRadius();
+    float getMass();
+    sf::Vector2f speed; // px/s
 private:
     bool is_smooth();
     bool is_striped();
     unsigned id;
     sf::CircleShape shape;
     double weight = 0.200; // 0.200 kg
-    sf::Vector2f speed; // m/s
 };
 
 #endif

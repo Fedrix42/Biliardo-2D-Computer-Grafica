@@ -5,6 +5,7 @@
 Propozioni di un tavolo da biliardo: Width 2 : Height 1
 Solitamente 284cm x 142cm con buche da 12.5cm
 */
+
 Table::Table(sf::Vector2u window_size, sf::Vector2i offsets)
 {
     // Tavolo
@@ -51,11 +52,18 @@ void Table::draw(sf::RenderWindow& window)
         pockets.at(id).draw(window);
         walls.at(id).draw(window);
     }
-    for(auto entry : balls){
+    for(auto& entry : balls){
         entry.second.ball.draw(window);
     }
     cue.draw(window);
 }
+
+void Table::update(sf::Time time){
+    for(auto& entry : balls){
+        entry.second.ball.update(time);
+    }
+}
+
 
 /*
 Le buche sono in proporzione 11.36 volte meno l'altezza del tavolo

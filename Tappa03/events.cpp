@@ -12,6 +12,9 @@ void handle_resize(const sf::Event::Resized& resized, sf::RenderWindow& window)
 // Keyboard events
 void handle_key_pressed(const sf::Event::KeyPressed* pressed, sf::RenderWindow& window, GameState& state)
 {
+    if(pressed->code == sf::Keyboard::Key::K){
+        state.shot();
+    }
 }
 void handle_key_released(const sf::Event::KeyReleased* released, sf::RenderWindow& window, GameState& state)
 {
