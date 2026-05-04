@@ -1,12 +1,14 @@
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
-#include "strutture/table.h"
+#include "../structures/table.h"
 #include <SFML/Graphics.hpp>
+#include "gpstate.h"
 
 enum Gamemode {
     SINGLE_PLAYER,
     MULTI_PLAYER
 };
+
 
 class GameState {
 public:
@@ -15,7 +17,9 @@ public:
     Table table;
     void shot();
     void update(sf::Time time);
+    GameplayState getCurrentGameplayState();
 private:
+    GameplayState current;
     sf::RenderWindow& window;
 };
 

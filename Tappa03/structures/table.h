@@ -6,7 +6,7 @@
 #include "../assetmgr.h"
 #include "cue.h"
 #include "unordered_map"
-
+#include "../state/gpstate.h"
 
 
 class Pocket { // Buca
@@ -43,15 +43,14 @@ struct BallStatus {
 class Table {
 public:
     Table(sf::Vector2u window_size, sf::Vector2i offsets);
-    void draw(sf::RenderWindow& window);
+    void draw(sf::RenderWindow& window, GameplayState currentGS);
     Cue cue;
     void update(sf::Time time);
     const float REAL_TABLE_WIDTH = 2.84; // metri
     const float REAL_TABLE_HEIGHT = 1.42;
 private:
-    // Posizione del tavolo
-    sf::Vector2f offset;
-    // Textures usate (unico caricamento per tipo)
+    sf::Vector2f offset; // Posizione del tavolo rispetto il viewport
+    float frictionCoeff = 2.3f; // Coefficiente di attrito
     sf::RectangleShape shape;
     std::vector<Pocket> pockets; // Buche
     std::vector<TableWall> walls; // Muri

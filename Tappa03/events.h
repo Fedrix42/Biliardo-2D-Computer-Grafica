@@ -1,6 +1,6 @@
 #ifndef EVENTS_H
 #define EVENTS_H
-#include "state.h"
+#include "state/state.h"
 #include <SFML/Graphics.hpp>
 
 void handle_close(sf::RenderWindow& window, GameState& state);

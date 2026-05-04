@@ -1,6 +1,7 @@
 #include "table.h"
 #include <iostream>
 #include "../utils.h"
+
 /*
 Propozioni di un tavolo da biliardo: Width 2 : Height 1
 Solitamente 284cm x 142cm con buche da 12.5cm
@@ -32,20 +33,20 @@ Table::Table(sf::Vector2u window_size, sf::Vector2i offsets)
     float pocket_radius = pockets.at(0).getRadius();
 
     // Palline
-    balls.insert({BallIDRange::WHITE, BallStatus(Ball(BallIDRange::WHITE, pocket_radius))});
-    balls.insert({BallIDRange::BLACK, BallStatus(Ball(BallIDRange::BLACK, pocket_radius))});
+    balls.insert({BallIDRange::WHITE, BallStatus(Ball(BallIDRange::WHITE, pocket_radius, frictionCoeff))});
+    balls.insert({BallIDRange::BLACK, BallStatus(Ball(BallIDRange::BLACK, pocket_radius, frictionCoeff))});
     for (unsigned id = BallIDRange::SMOOTH_START; id <= BallIDRange::SMOOTH_STOP; id++) {
-        balls.insert({id,BallStatus(Ball(id, pocket_radius))});
+        balls.insert({id,BallStatus(Ball(id, pocket_radius, frictionCoeff))});
     }
     for (unsigned id = BallIDRange::STRIPED_START; id <= BallIDRange::STRIPED_STOP; id++) {
-        balls.insert({id,BallStatus(Ball(id, pocket_radius))});
+        balls.insert({id,BallStatus(Ball(id, pocket_radius, frictionCoeff))});
     }
 
     // Stecca
     cue.setAnchor(&balls.find(BallIDRange::WHITE)->second.ball);
 }
 
-void Table::draw(sf::RenderWindow& window)
+void Table::draw(sf::RenderWindow& window, GameplayState currentGS)
 {
     window.draw(shape);
     for (unsigned id = 0; id < 6; id++) {
@@ -55,7 +56,9 @@ void Table::draw(sf::RenderWindow& window)
     for(auto& entry : balls){
         entry.second.ball.draw(window);
     }
-    cue.draw(window);
+    if(currentGS != GameplayState::SIMULATION){
+        cue.draw(window);
+    }
 }
 
 void Table::update(sf::Time time){

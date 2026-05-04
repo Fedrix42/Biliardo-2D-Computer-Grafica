@@ -1,9 +1,9 @@
 #include "state.h"
-#include "utils.h"
+#include "../utils.h"
 #include <iostream>
 
 GameState::GameState(Gamemode mode, sf::RenderWindow& window)
-    : table(window.getSize(), { 0, 0 }), window(window)
+    : table(window.getSize(), { 0, 0 }), current(GameplayState::PLAYER_ACTION), window(window)
 {
 }
 
@@ -25,6 +25,9 @@ che userò per i rimbalzi.
 */
 
 void GameState::shot(){
+    if(current == GameplayState::SIMULATION)
+        return; // Non si puo colpire nuovamente durante la simulazione. Bisogna aspettare termini.
+    current = GameplayState::SIMULATION;
     Cue cue = table.cue;
     Ball* ball = cue.getAnchor();
 
@@ -47,5 +50,5 @@ void GameState::update(sf::Time time)
 
 void GameState::draw(sf::RenderWindow& window)
 {
-    this->table.draw(window);
+    this->table.draw(window, current);
 }

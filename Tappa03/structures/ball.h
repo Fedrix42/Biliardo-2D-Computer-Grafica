@@ -21,7 +21,7 @@ enum BallIDRange {
 
 class Ball {
 public:
-    Ball(unsigned id, float pocket_radius);
+    Ball(unsigned id, float pocket_radius, float tableFrictionCoeff);
     void draw(sf::RenderWindow& window);
     sf::Vector2f getPosition();
     void update(sf::Time time);
@@ -34,6 +34,7 @@ private:
     unsigned id;
     sf::CircleShape shape;
     double weight = 0.200; // 0.200 kg
+    float frictionCoeff; // Coefficiente di attrito
 };
 
 #endif

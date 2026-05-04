@@ -1,6 +1,6 @@
 #include "main.h"
 #include "events.h"
-#include "state.h"
+#include "state/state.h"
 #include <SFML/Graphics.hpp>
 #include <atomic>
 #include <csignal>
