@@ -37,3 +37,7 @@ file(GLOB_RECURSE SRC_TAPPA03 CONFIGURE_DEPENDS Tappa03/*.cpp)
 add_executable(Tappa03 ${SRC_TAPPA03})
 target_link_libraries(Tappa03 PRIVATE SFML::Graphics common)
 
+file(GLOB_RECURSE SRC_TAPPA04 CONFIGURE_DEPENDS Tappa04/*.cpp)
+add_executable(Tappa04 ${SRC_TAPPA04})
+target_link_libraries(Tappa04 PRIVATE SFML::Graphics common)
+
