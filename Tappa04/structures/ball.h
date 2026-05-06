@@ -2,7 +2,7 @@
 #define BALL_H
 #include <SFML/Graphics.hpp>
 #include <vector>
-
+#include "collider.h"
 /*
 Ball ID:
 | 1 - 7 Smooth
@@ -19,16 +19,22 @@ enum BallIDRange {
     WHITE = 16
 };
 
-class Ball {
+class Ball : public Collider {
 public:
     Ball(unsigned id, float pocket_radius, float tableFrictionCoeff);
     void draw(sf::RenderWindow& window);
-    sf::Vector2f getPosition();
     void update(sf::Time time);
     float getRadius();
     float getMass();
-    sf::Vector2f speed; // px/s
+    std::vector<sf::Vector2f> getHitbox() const override;
+    sf::Vector2f getPosition() const override;
+    sf::Vector2f getSpeed() const override;
+    void setPosition(sf::Vector2f pos) override;
+    void setSpeed(sf::Vector2f speed) override;
+    std::string to_string() const override;
+    sf::FloatRect getBoundBox() const override;
 private:
+    sf::Vector2f speed; // px/s
     bool is_smooth();
     bool is_striped();
     unsigned id;

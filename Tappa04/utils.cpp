@@ -16,6 +16,35 @@ float fnspeedA_1D(float massA, float massB, float inspeedA, float inspeedB){
     return comp1 + comp2;
 }
 
+
+// Operazioni geometriche per le collisioni
+std::optional<sf::Vector2f> segment_intersection(sf::Vector2f A, sf::Vector2f B, sf::Vector2f C, sf::Vector2f D){
+    const float EPS = 1e-6f;
+
+    // Segmento 1: A - B
+    // Segmento 2: C - D
+    float delta1 = B.x - A.x;
+    float delta2 = B.y - A.y;
+    float delta3 = D.x - C.x;
+    float delta4 = D.y - C.y;
+    float delta5 = C.x - A.x;
+    float delta6 = C.y - A.y;
+
+    float det = delta1*delta4 - delta2 * delta3;
+    if(det < EPS){
+        return std::nullopt; // Segmenti coincidono o paralleli
+    }
+
+    float parameter1 = ((delta5*delta4)-(delta6*delta3)) / det;
+    float parameter2 = ((delta5*delta2)-(delta6*delta1)) / det;
+    if(parameter1 > 1 || parameter2 > 1 || parameter1 < EPS || parameter2 < EPS)
+        return std::nullopt; // Nessun punto di intersezione
+    sf::Vector2f res = {A.x + parameter1*(B.x - A.x), A.y + parameter1*(B.y - A.y)};
+    return res;
+}
+
+
+
 // Op. vettoriali
 float dist(sf::Vector2f p1, sf::Vector2f p2)
 {
@@ -49,6 +78,18 @@ sf::Vector2f clkwise_rot(sf::Vector2f v){ // Rotazione orario di 90 gradi rispet
 
 sf::Vector2f counterclkwise_rot(sf::Vector2f v){ // Rotazione antioraria di 90 gradi rispetto all'origine e con asse y invertita (cresce verso il basso)
     return {v.y, -v.x};
+}
+
+sf::Vector2f rotate(const sf::Vector2f& v, float radians, bool clockwise) { // Rotazione generica di radianti, oraria o antioraria
+    float angle = clockwise ? radians : -radians;
+
+    float c = std::cos(angle);
+    float s = std::sin(angle);
+
+    return {
+        v.x * c - v.y * s,
+        v.x * s + v.y * c
+    };
 }
 
 

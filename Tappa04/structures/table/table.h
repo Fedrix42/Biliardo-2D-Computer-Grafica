@@ -1,36 +1,14 @@
 #ifndef TABLE_H
 #define TABLE_H
-#include "ball.h"
 #include <SFML/Graphics.hpp>
 #include <vector>
-#include "../assetmgr.h"
-#include "cue.h"
+#include "../../state/gpstate.h"
+#include "../cue.h"
+#include "../ball.h"
+#include "pocket.h"
+#include "tablewall.h"
 #include "unordered_map"
-#include "../state/gpstate.h"
-#include "collider.h"
-
-class Pocket { // Buca
-public:
-    Pocket(unsigned id, sf::Vector2u table_size);
-    void draw(sf::RenderWindow& window);
-    sf::Vector2f getPosition();
-    float getRadius();
-
-private:
-    unsigned id;
-    sf::CircleShape shape;
-    std::vector<Ball*> balls;
-};
-
-class TableWall { // TO DO: Rendere Wall e Ball colliders
-public:
-    TableWall(unsigned id, Pocket left, Pocket right, sf::Vector2f direction);
-    void draw(sf::RenderWindow& window);
-
-private:
-    unsigned id;
-    sf::ConvexShape shape;
-};
+#include "../collider.h"
 
 
 // Usato per tenere traccia dello stato delle palline dentro la mappa in Table()
@@ -48,6 +26,7 @@ public:
     void update(sf::Time time);
     const float REAL_TABLE_WIDTH = 2.84; // metri
     const float REAL_TABLE_HEIGHT = 1.42;
+    std::vector<Collider*> getColliders();
 private:
     sf::Vector2f offset; // Posizione del tavolo rispetto il viewport
     float frictionCoeff = 2.3f; // Coefficiente di attrito
@@ -55,6 +34,7 @@ private:
     std::vector<Pocket> pockets; // Buche
     std::vector<TableWall> walls; // Muri
     std::unordered_map<unsigned, BallStatus> balls;
+    std::vector<Collider*> colliders;
 };
 
 #endif

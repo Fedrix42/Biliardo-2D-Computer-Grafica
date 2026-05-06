@@ -1,6 +1,6 @@
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
-#include "../structures/table.h"
+#include "../structures/table/table.h"
 #include <SFML/Graphics.hpp>
 #include "gpstate.h"
 
@@ -19,6 +19,7 @@ public:
     void update(sf::Time time);
     GameplayState getCurrentGameplayState();
 private:
+    void compute_collisions();
     GameplayState current;
     sf::RenderWindow& window;
 };

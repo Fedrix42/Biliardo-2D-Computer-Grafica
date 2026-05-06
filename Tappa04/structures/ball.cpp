@@ -2,6 +2,7 @@
 #include "../assetmgr.h"
 #include <iostream>
 #include "../utils.h"
+
 /*
 Propozioni di un tavolo da biliardo: Width 2 : Height 1
 Solitamente 284cm x 142cm con buche da 12.5cm
@@ -22,11 +23,6 @@ Ball::Ball(unsigned id, float pocket_radius, float tableFrictionCoeff)
 float Ball::getRadius()
 {
     return shape.getRadius();
-}
-
-
-sf::Vector2f Ball::getPosition(){
-    return shape.getPosition();
 }
 
 bool Ball::is_smooth(){
@@ -53,6 +49,7 @@ void Ball::update(sf::Time time){
     shape.setPosition(shape.getPosition() + speed * time.asSeconds());
 }
 
+
 void Ball::draw(sf::RenderWindow& window)
 {
     window.draw(shape);
@@ -61,4 +58,49 @@ void Ball::draw(sf::RenderWindow& window)
 float Ball::getMass()
 {
     return weight;
+}
+
+
+
+std::vector<sf::Vector2f> Ball::getHitbox() const {
+    std::vector<sf::Vector2f> res; //
+    float angle = PI / 4.0f; // 45 gradi
+    sf::Vector2f radiusVec = {0, -shape.getRadius()};// - Radius perchè le y sono invertite
+    sf::Vector2f position = shape.getPosition();
+    // Ruoto il vettore raggio parallelo all'asse y di 9 volte (cosi riprendo il punto finale)
+    // per modellare la mia pallina come un ottagono
+    for(int i = 0; i <= 8; i++){
+        res.push_back(radiusVec + position);
+        radiusVec = rotate(radiusVec, angle, true);
+    }
+    return res;
+}
+
+sf::FloatRect Ball::getBoundBox() const
+{
+    sf::Vector2f pos = shape.getPosition();
+    float r = shape.getRadius();
+    return sf::FloatRect({pos.x - r, pos.y - r}, {pos.x + r, pos.y + r});
+}
+
+
+sf::Vector2f Ball::getPosition() const {
+    return shape.getPosition();
+}
+
+sf::Vector2f Ball::getSpeed() const
+{
+    return speed;
+}
+
+void Ball::setPosition(sf::Vector2f pos){
+    shape.setPosition(pos);
+}
+
+void Ball::setSpeed(sf::Vector2f speed){
+    this->speed = speed;
+}
+
+std::string Ball::to_string() const {
+    return "Ball[" + std::to_string(id) + "]";
 }

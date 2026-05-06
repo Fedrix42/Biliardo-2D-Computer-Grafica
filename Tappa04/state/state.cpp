@@ -39,12 +39,28 @@ void GameState::shot(){
         << ball_final_speed << " px/s ("
         << vectorized_ball_speed.x << "," << vectorized_ball_speed.y << ")" << std::endl;
 
-    ball->speed = vectorized_ball_speed;
+    ball->setSpeed(vectorized_ball_speed);
+}
+
+void  GameState::compute_collisions(){
+    auto colliders = table.getColliders();
+    for(Collider* c1 : colliders){
+        for(Collider* c2 : colliders){
+            if(c1->doesBoundBoxesCollide(c2)){ // Collisione semplice
+                std::optional<sf::Vector2f> collpt = c1->collision_point(c2); // Calcola i punti di collisione
+                if(collpt){
+                    std::cout << "Collisione: " << c1->to_string() << " - " << c2->to_string() << point_to_str(*collpt) << std::endl;
+                }
+            }
+        }
+    }
+
 }
 
 void GameState::update(sf::Time time)
 {
     table.update(time);
+    compute_collisions();
 }
 
 
