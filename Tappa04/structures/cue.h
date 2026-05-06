@@ -25,7 +25,7 @@ private:
     sf::Vector2f impact; // Punto di impatto
     sf::Vector2f direction; // Direzione normalizzata del colpo
     Ball* anchor;
-    double weight = 0.5; // 0.5 kg
+    float mass = 0.5; // 0.5 kg
     float speed; // Forza del colpo definito come vettore di velocità (metri al secondo)
 };
 

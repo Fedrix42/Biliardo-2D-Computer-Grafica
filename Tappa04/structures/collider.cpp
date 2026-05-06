@@ -1,7 +1,13 @@
 #include "collider.h"
 #include "../utils.h"
 #include <iostream>
-std::optional<sf::Vector2f> Collider::collision_point(Collider* collider)
+
+void rollbackPositions(Collider* c1, Collider* c2, sf::Vector2f c1p, sf::Vector2f c2p){
+    c1->setPosition(c1p);
+    c2->setPosition(c2p);
+}
+
+void Collider::computeAndSetCollision(Collider* collider)
 {
     /*  Normalizziamo la velocità di entrambi gli oggetti in modo da muoverli con una precisione molto alta
         e troviamo il primo punto di collisione. Se non ci sono punti di collisione tra la posizione attuale e
@@ -26,9 +32,21 @@ std::optional<sf::Vector2f> Collider::collision_point(Collider* collider)
             for(size_t j = 0; j < other_bounds.size() - 1; j++){
                 std::optional<sf::Vector2f> impact_point = segment_intersection(my_bounds.at(i), my_bounds.at(i + 1), other_bounds.at(j), other_bounds.at(j + 1));
                 if(impact_point){
-                    this->setPosition(my_old_position); // Importante: il rollback delle posizioni originali
-                    collider->setPosition(other_old_position);
-                    return impact_point;
+                    std::cout << "Impatto tra " << this->to_string() << " e " << collider->to_string() << ": " << point_to_str(*impact_point) << std::endl;
+                    this->futureCollisions.push_back(Collision{ // Aggiungi la collisione a me
+                        *impact_point,
+                        this->getPosition(),
+                        collider->getSpeed(),
+                        collider->getMass()
+                    });
+                    collider->futureCollisions.push_back(Collision{ // Aggiungi la collisione al collider
+                        *impact_point,
+                        collider->getPosition(),
+                        this->getSpeed(),
+                        this->getMass()
+                    });
+                    rollbackPositions(this, collider, my_old_position, other_old_position); // Importante: devo fare il rollback delle posizioni originali
+                    return;
                 }
             }
         }
@@ -37,11 +55,14 @@ std::optional<sf::Vector2f> Collider::collision_point(Collider* collider)
         this->setPosition(this->getPosition() + my_speed_norm);
         collider->setPosition(collider->getPosition() + collider_speed_norm);
     }
-    // Importante: il rollback delle posizioni originali
-    this->setPosition(my_old_position);
-    collider->setPosition(other_old_position);
-    return std::nullopt;
+    rollbackPositions(this, collider, my_old_position, other_old_position); // Importante: devo fare il rollback delle posizioni originali
 }
+
+std::vector<Collision> Collider::getFutureCollisions()
+{
+    return futureCollisions;
+}
+
 
 bool Collider::doesBoundBoxesCollide(Collider* collider)
 {

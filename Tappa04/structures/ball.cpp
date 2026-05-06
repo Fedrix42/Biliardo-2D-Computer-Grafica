@@ -44,9 +44,40 @@ void Ball::update(sf::Time time){
         speed.y -= decelleration * time.asSeconds();
         speed.y = (speed.y < 0.005f) ? 0 : speed.y;
     }
+    sf::Vector2f my_pos = shape.getPosition();
+    sf::Vector2f new_pos = my_pos + speed * time.asSeconds();
 
-    // Aggiornamento della posizione
-    shape.setPosition(shape.getPosition() + speed * time.asSeconds());
+    std::vector<Collision> collisions = getFutureCollisions();
+
+    if(!collisions.empty()){
+        // Devo simulare ora la collisione o posso farlo al prossimo frame?
+        std::vector<int> simulated_collisions;
+
+        for(size_t index = 0; index < collisions.size(); index++){
+            Collision c = collisions.at(index);
+            if(dist(my_pos, c.position_at_collision) < dist(my_pos, new_pos)){ // Devo simulare ora la collisione
+                sf::Vector2f n = c.collision_point - my_pos;
+                n /= norm(n);
+                sf::Vector2f vdelta = (c.collider_speed - speed);
+                float velocity_relative_to_n = dot(n, vdelta); // Prodotto scalare
+                float my_mass_opp = 1 / getMass();
+                float collider_mass_opp = 1 / c.collider_mass;
+                float impulse = (-2*velocity_relative_to_n) / (my_mass_opp + collider_mass_opp);
+                speed += ( (impulse / getMass()) * n ); // Nuova velocità finale
+                new_pos = my_pos + speed * time.asSeconds();
+                simulated_collisions.push_back(index);
+            }
+        }
+        for(size_t to_remove : simulated_collisions){
+            std::cout << "Removing " << to_remove << std::endl;
+            collisions.erase(collisions.begin() + to_remove);
+        }
+
+    }
+
+    shape.setPosition(new_pos);
+
+
 }
 
 
@@ -55,9 +86,9 @@ void Ball::draw(sf::RenderWindow& window)
     window.draw(shape);
 }
 
-float Ball::getMass()
+float Ball::getMass() const
 {
-    return weight;
+    return mass;
 }
 
 
@@ -104,3 +135,4 @@ void Ball::setSpeed(sf::Vector2f speed){
 std::string Ball::to_string() const {
     return "Ball[" + std::to_string(id) + "]";
 }
+

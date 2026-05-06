@@ -44,16 +44,15 @@ void GameState::shot(){
 
 void  GameState::compute_collisions(){
     auto colliders = table.getColliders();
-    for(Collider* c1 : colliders){
-        for(Collider* c2 : colliders){
-            if(c1->doesBoundBoxesCollide(c2)){ // Collisione semplice
-                std::optional<sf::Vector2f> collpt = c1->collision_point(c2); // Calcola i punti di collisione
-                if(collpt){
-                    std::cout << "Collisione: " << c1->to_string() << " - " << c2->to_string() << point_to_str(*collpt) << std::endl;
-                }
-            }
+    for (size_t i = 0; i < colliders.size(); ++i) {
+    for (size_t j = i + 1; j < colliders.size(); ++j) {
+        Collider* c1 = colliders[i];
+        Collider* c2 = colliders[j];
+        if (c1->doesBoundBoxesCollide(c2)) {
+            c1->computeAndSetCollision(c2);
         }
     }
+}
 
 }
 

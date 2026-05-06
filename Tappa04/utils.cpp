@@ -92,6 +92,11 @@ sf::Vector2f rotate(const sf::Vector2f& v, float radians, bool clockwise) { // R
     };
 }
 
+// Prodotto scalare (non trovato in SFML)
+float dot(sf::Vector2f a, sf::Vector2f b){
+    return a.x * b.x + a.y * b.y;
+}
+
 
 
 // Altro

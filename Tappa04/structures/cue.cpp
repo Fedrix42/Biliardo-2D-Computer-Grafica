@@ -69,6 +69,6 @@ Ball* Cue::getAnchor()
 
 float Cue::getMass()
 {
-    return weight;
+    return mass;
 }
 

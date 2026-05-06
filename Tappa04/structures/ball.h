@@ -25,21 +25,21 @@ public:
     void draw(sf::RenderWindow& window);
     void update(sf::Time time);
     float getRadius();
-    float getMass();
-    std::vector<sf::Vector2f> getHitbox() const override;
+    float getMass() const override;
     sf::Vector2f getPosition() const override;
     sf::Vector2f getSpeed() const override;
     void setPosition(sf::Vector2f pos) override;
     void setSpeed(sf::Vector2f speed) override;
     std::string to_string() const override;
-    sf::FloatRect getBoundBox() const override;
 private:
+    std::vector<sf::Vector2f> getHitbox() const override;
+    sf::FloatRect getBoundBox() const override;
     sf::Vector2f speed; // px/s
     bool is_smooth();
     bool is_striped();
     unsigned id;
     sf::CircleShape shape;
-    double weight = 0.200; // 0.200 kg
+    float mass = 0.200; // 0.200 kg
     float frictionCoeff; // Coefficiente di attrito
 };
 

@@ -24,6 +24,7 @@ sf::Vector2f opposite(sf::Vector2f v);
 sf::Vector2f clkwise_rot(sf::Vector2f v);
 sf::Vector2f counterclkwise_rot(sf::Vector2f v);
 sf::Vector2f rotate(const sf::Vector2f& v, float radians, bool clockwise);
+float dot(sf::Vector2f a, sf::Vector2f b);
 
 std::string point_to_str(sf::Vector2f p);
 

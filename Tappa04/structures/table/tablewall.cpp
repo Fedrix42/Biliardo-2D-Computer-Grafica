@@ -75,6 +75,12 @@ sf::FloatRect TableWall::getBoundBox() const
     return sf::FloatRect(shape.getPoint(0), shape.getPoint(2));
 }
 
+float TableWall::getMass() const
+{
+    return MAXFLOAT; // Muro immobile
+}
+
+
 
 
 
