@@ -67,19 +67,21 @@ void TableWall::setPosition(sf::Vector2f pos){}
 void TableWall::setSpeed(sf::Vector2f speed){}
 
 std::string TableWall::to_string() const {
-    return "Wall[" + std::to_string(id) + "]";
+    return ("Wall["  + std::to_string(id) + " ,"
+                     + point_to_str(getBoundBox().position)
+                     + point_to_str(getBoundBox().size)
+    + "]");
 }
 
 sf::FloatRect TableWall::getBoundBox() const
 {
-    return sf::FloatRect(shape.getPoint(0), shape.getPoint(2));
+    return sf::FloatRect(shape.getPoint(3), shape.getPoint(1) - shape.getPoint(3));
 }
 
 float TableWall::getMass() const
 {
-    return MAXFLOAT; // Muro immobile
+    return 100; // Massa molto grande (Non uso MAXFLOAT per evitare overflow)
 }
-
 
 
 

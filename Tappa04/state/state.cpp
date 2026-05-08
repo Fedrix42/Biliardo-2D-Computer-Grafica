@@ -45,15 +45,24 @@ void GameState::shot(){
 void  GameState::compute_collisions(){
     auto colliders = table.getColliders();
     for (size_t i = 0; i < colliders.size(); ++i) {
-    for (size_t j = i + 1; j < colliders.size(); ++j) {
-        Collider* c1 = colliders[i];
-        Collider* c2 = colliders[j];
-        if (c1->doesBoundBoxesCollide(c2)) {
-            c1->computeAndSetCollision(c2);
+        for (size_t j = i + 1; j < colliders.size(); ++j) {
+            Collider* c1 = colliders[i];
+            Collider* c2 = colliders[j];
+            if (c1->doesBoundBoxesCollide(c2)) {
+                std::vector<Collision> result = c1->computeCollisions(c2);
+                if(!result.empty()){
+                    if(c1->collisions.find(c2) == c1->collisions.end()){
+                        std::cout << c1->to_string() << " collide con " << c2->to_string() << "a " << point_to_str(result.at(0).collision_point) << std::endl;
+                        c1->collisions[c2] = result.at(0);
+                    }
+                    if(c2->collisions.find(c1) == c2->collisions.end()){
+                        std::cout << c2->to_string() << " collide con " << c1->to_string() << "a " << point_to_str(result.at(1).collision_point) << std::endl;
+                        c2->collisions[c1] = result.at(1);
+                    }
+                }
+            }
         }
     }
-}
-
 }
 
 void GameState::update(sf::Time time)

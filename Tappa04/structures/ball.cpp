@@ -47,38 +47,44 @@ void Ball::update(sf::Time time){
     sf::Vector2f my_pos = shape.getPosition();
     sf::Vector2f new_pos = my_pos + speed * time.asSeconds();
 
-    std::vector<Collision> collisions = getFutureCollisions();
+    for(auto &entry : collisions){
+        Collision c = entry.second;
+        Collider* against = entry.first; // L'oggetto contro cui collido
+        if(dist(my_pos, c.pos_on_collision) < dist(my_pos, new_pos)){ // Devo simulare ora la collisione
 
-    if(!collisions.empty()){
-        // Devo simulare ora la collisione o posso farlo al prossimo frame?
-        std::vector<int> simulated_collisions;
+            // Metodo dell'impulso
+            sf::Vector2f unitary_normal_vector = c.normal;
 
-        for(size_t index = 0; index < collisions.size(); index++){
-            Collision c = collisions.at(index);
-            if(dist(my_pos, c.position_at_collision) < dist(my_pos, new_pos)){ // Devo simulare ora la collisione
-                sf::Vector2f n = c.collision_point - my_pos;
-                n /= norm(n);
-                sf::Vector2f vdelta = (c.collider_speed - speed);
-                float velocity_relative_to_n = dot(n, vdelta); // Prodotto scalare
-                float my_mass_opp = 1 / getMass();
-                float collider_mass_opp = 1 / c.collider_mass;
-                float impulse = (-2*velocity_relative_to_n) / (my_mass_opp + collider_mass_opp);
-                speed += ( (impulse / getMass()) * n ); // Nuova velocità finale
-                new_pos = my_pos + speed * time.asSeconds();
-                simulated_collisions.push_back(index);
-            }
+            // Componenti delle velocità normalizzate rispetto la linea di impatto
+            float my_start_velocity_alongn = this->velocityAlongNormal(against);
+            float against_start_velocity_alongn = against->velocityAlongNormal(this);
+
+            // Calcolo la componente finale lungo la linea di impatto
+            float my_final_velocity_alongn = fnspeedA_1D(getMass(), against->getMass(), my_start_velocity_alongn, against_start_velocity_alongn);
+            float my_delta_velocity_alongn = my_final_velocity_alongn - my_start_velocity_alongn;
+
+            speed += unitary_normal_vector*my_delta_velocity_alongn; // La vera velocità finale
+
+            std::cout << "Risultato della collisione bidimensionale:"
+                << "\n\tVettore normale unitario: " << point_to_str(unitary_normal_vector)
+                << "\n\tVelocità lungo la normale: " << my_start_velocity_alongn
+                << "\n\tVelocità del collisore lungo la normale: " << against_start_velocity_alongn
+                << "\n\tVelocità finale lungo la normale: " << my_final_velocity_alongn
+                << "\n\tDifferenza di velocità lungo la normale: " << my_delta_velocity_alongn
+                << "\n\tVelocità finale: " << point_to_str(speed)
+                << std::endl;
+
+            new_pos = my_pos + speed * time.asSeconds();
+            collisions.erase(against);
+            against->collisions.erase(this);
         }
-        for(size_t to_remove : simulated_collisions){
-            std::cout << "Removing " << to_remove << std::endl;
-            collisions.erase(collisions.begin() + to_remove);
-        }
-
     }
 
     shape.setPosition(new_pos);
 
 
 }
+
 
 
 void Ball::draw(sf::RenderWindow& window)
@@ -111,7 +117,8 @@ sf::FloatRect Ball::getBoundBox() const
 {
     sf::Vector2f pos = shape.getPosition();
     float r = shape.getRadius();
-    return sf::FloatRect({pos.x - r, pos.y - r}, {pos.x + r, pos.y + r});
+    r = 2*r; // Raddoppio il raggio per fare una bounding box molto più grande ed identificare meglio gli urti a grandi velocità
+    return sf::FloatRect({pos.x - r, pos.y - r}, {2*r, 2*r});
 }
 
 
@@ -133,6 +140,9 @@ void Ball::setSpeed(sf::Vector2f speed){
 }
 
 std::string Ball::to_string() const {
-    return "Ball[" + std::to_string(id) + "]";
+    return ("Ball["  + std::to_string(id) + " ,"
+                     + point_to_str(getBoundBox().position)
+                     + point_to_str(getBoundBox().size)
+    + "]");
 }
 

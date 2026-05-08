@@ -7,8 +7,9 @@ void rollbackPositions(Collider* c1, Collider* c2, sf::Vector2f c1p, sf::Vector2
     c2->setPosition(c2p);
 }
 
-void Collider::computeAndSetCollision(Collider* collider)
+std::vector<Collision> Collider::computeCollisions(Collider* collider)
 {
+    std::vector<Collision> result;
     /*  Normalizziamo la velocità di entrambi gli oggetti in modo da muoverli con una precisione molto alta
         e troviamo il primo punto di collisione. Se non ci sono punti di collisione tra la posizione attuale e
         quella futura, allora restituisco nullopt.
@@ -28,25 +29,34 @@ void Collider::computeAndSetCollision(Collider* collider)
         // Controllo se c'è un punto di collisione tra le hitbox
         std::vector<sf::Vector2f> my_bounds = this->getHitbox();
         std::vector<sf::Vector2f> other_bounds = collider->getHitbox();
+
         for(size_t i = 0; i < my_bounds.size() - 1; i++){
             for(size_t j = 0; j < other_bounds.size() - 1; j++){
-                std::optional<sf::Vector2f> impact_point = segment_intersection(my_bounds.at(i), my_bounds.at(i + 1), other_bounds.at(j), other_bounds.at(j + 1));
+
+                sf::Vector2f A = my_bounds.at(i);
+                sf::Vector2f B = my_bounds.at( i+ 1);
+                sf::Vector2f C = other_bounds.at(j);
+                sf::Vector2f D = other_bounds.at(j + 1);
+
+                std::optional<sf::Vector2f> impact_point = segment_intersection(A, B, C, D);
+
                 if(impact_point){
-                    std::cout << "Impatto tra " << this->to_string() << " e " << collider->to_string() << ": " << point_to_str(*impact_point) << std::endl;
-                    this->futureCollisions.push_back(Collision{ // Aggiungi la collisione a me
+                    sf::Vector2f my_segment = B - A;
+                    sf::Vector2f collider_segment = D - C;
+                    sf::Vector2f my_normal = clkwise_rot(my_segment) / norm(my_segment); // Perpendiolare al segmento B - A
+                    sf::Vector2f collider_normal = clkwise_rot(collider_segment) / norm(collider_segment);
+
+                    result.resize(2);
+                    result.at(0) = Collision{ // Aggiungi la collisione a me
+                        my_normal,
                         *impact_point,
-                        this->getPosition(),
-                        collider->getSpeed(),
-                        collider->getMass()
-                    });
-                    collider->futureCollisions.push_back(Collision{ // Aggiungi la collisione al collider
+                        this->getPosition()
+                    };
+                    result.at(1) = Collision{ // Aggiungi la collisione al collider
+                        collider_normal,
                         *impact_point,
-                        collider->getPosition(),
-                        this->getSpeed(),
-                        this->getMass()
-                    });
-                    rollbackPositions(this, collider, my_old_position, other_old_position); // Importante: devo fare il rollback delle posizioni originali
-                    return;
+                        collider->getPosition()
+                    };
                 }
             }
         }
@@ -56,11 +66,20 @@ void Collider::computeAndSetCollision(Collider* collider)
         collider->setPosition(collider->getPosition() + collider_speed_norm);
     }
     rollbackPositions(this, collider, my_old_position, other_old_position); // Importante: devo fare il rollback delle posizioni originali
+    return result;
 }
 
-std::vector<Collision> Collider::getFutureCollisions()
+
+
+float Collider::velocityAlongNormal(Collider* collider) const
 {
-    return futureCollisions;
+    auto it = collisions.find(collider);
+    if(it != collisions.end()){
+        return dot(getSpeed(), it->second.normal);
+    }else {
+        throw std::logic_error("[ERROR] No collision with collider");
+    }
+
 }
 
 
