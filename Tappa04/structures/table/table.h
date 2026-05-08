@@ -29,7 +29,7 @@ public:
     std::vector<Collider*> getColliders();
 private:
     sf::Vector2f offset; // Posizione del tavolo rispetto il viewport
-    float frictionCoeff = 2.3f; // Coefficiente di attrito
+    float frictionCoeff = 3.3f; // Coefficiente di attrito
     sf::RectangleShape shape;
     std::vector<Pocket> pockets; // Buche
     std::vector<TableWall> walls; // Muri

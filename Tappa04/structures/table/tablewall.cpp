@@ -67,7 +67,7 @@ void TableWall::setPosition(sf::Vector2f pos){}
 void TableWall::setSpeed(sf::Vector2f speed){}
 
 std::string TableWall::to_string() const {
-    return ("Wall["  + std::to_string(id) + " ,"
+    return ("Wall["  + std::to_string(id) + " -- "
                      + point_to_str(getBoundBox().position)
                      + point_to_str(getBoundBox().size)
     + "]");
@@ -80,7 +80,7 @@ sf::FloatRect TableWall::getBoundBox() const
 
 float TableWall::getMass() const
 {
-    return 100; // Massa molto grande (Non uso MAXFLOAT per evitare overflow)
+    return 10000; // Massa molto grande (Non uso MAXFLOAT per evitare overflow)
 }
 
 

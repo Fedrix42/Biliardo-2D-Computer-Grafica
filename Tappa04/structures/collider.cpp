@@ -49,13 +49,11 @@ std::vector<Collision> Collider::computeCollisions(Collider* collider)
                     result.resize(2);
                     result.at(0) = Collision{ // Aggiungi la collisione a me
                         my_normal,
-                        *impact_point,
-                        this->getPosition()
+                        *impact_point
                     };
                     result.at(1) = Collision{ // Aggiungi la collisione al collider
                         collider_normal,
-                        *impact_point,
-                        collider->getPosition()
+                        *impact_point
                     };
                 }
             }

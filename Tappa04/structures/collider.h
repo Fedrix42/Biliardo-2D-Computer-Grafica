@@ -11,7 +11,7 @@ class Collider;
 struct Collision {
     sf::Vector2f normal; // Perpendiolare e normalizzato al punto di impatto
     sf::Vector2f collision_point; // Punto di collisione
-    sf::Vector2f pos_on_collision; // Posizione al momento della collisione
+    bool applied = false;
 };
 
 class Collider {
