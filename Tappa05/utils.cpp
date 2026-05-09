@@ -21,6 +21,19 @@ float distanceOnTime(float speed, float deceleration, sf::Time delta){
     return (speed*delta.asSeconds()) + 0.5f*deceleration*pow(delta.asSeconds(), 2);
 }
 
+sf::Vector2f speedAfterTime(sf::Vector2f speed, float deceleration, sf::Time delta){
+    float speed_module = norm(speed);
+    sf::Vector2f speed_norm = (speed_module != 0) ? (speed / speed_module) : sf::Vector2f{0,0};
+    float timed_deceleration = deceleration * delta.asSeconds();
+    if(timed_deceleration >= speed_module){
+        speed = {0,0};
+    } else {
+        speed -= (speed_norm * timed_deceleration);
+
+    }
+    return speed;
+}
+
 
 // Operazioni geometriche per le collisioni
 std::optional<sf::Vector2f> segment_intersection(sf::Vector2f A, sf::Vector2f B, sf::Vector2f C, sf::Vector2f D){

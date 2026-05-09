@@ -48,20 +48,12 @@ void  GameState::compute_collisions(sf::Time current_t){
         for (size_t j = i + 1; j < colliders.size(); ++j) {
             Collider* c1 = colliders[i];
             Collider* c2 = colliders[j];
-            if (c1->doesBoundBoxesCollide(c2)) {
+            if (c1->doesBoundBoxesCollide(c2) && c1->collisions.find(c2) == c1->collisions.end() && c2->collisions.find(c1) == c2->collisions.end()) {
                 auto result = c1->computeCollisions(c2, current_t);
                 if(result){
-                    if(c1->collisions.find(c2) == c1->collisions.end()){
-                        std::cout << c1->to_string() << " collide con " << c2->to_string() << " a " << point_to_str((*result).first.collision_point) << std::endl;
-                        c1->collisions[c2] = (*result).first;
-                    }
-                    if(c2->collisions.find(c1) == c2->collisions.end()){
-                        std::cout << c2->to_string() << " collide con " << c1->to_string() << " a " << point_to_str((*result).second.collision_point) << std::endl;
-                        c2->collisions[c1] = (*result).second;
-                    }
-                } else {
-                    c1->collisions.erase(c2);
-                    c2->collisions.erase(c1);
+                    //std::cout << "Collisione tra " << c1->to_string() << " e " << c2->to_string() << std::endl;
+                    c1->collisions[c2] = (*result).first;
+                    c2->collisions[c1] = (*result).second;
                 }
             }
         }

@@ -39,11 +39,8 @@ Table::Table(sf::Vector2u window_size, sf::Vector2i offsets)
     // Palline
     float pocket_radius = pockets.at(0).getRadius();
     balls.insert({BallIDRange::WHITE, BallStatus(Ball(BallIDRange::WHITE, pocket_radius, frictionDeceleration))});
-
-    for(auto& entry : balls){
-        colliders.push_back(&entry.second.ball);
-    }
     balls.insert({BallIDRange::BLACK, BallStatus(Ball(BallIDRange::BLACK, pocket_radius, frictionDeceleration))});
+
     for (unsigned id = BallIDRange::SMOOTH_START; id <= BallIDRange::SMOOTH_STOP; id++) {
         balls.insert({id,BallStatus(Ball(id, pocket_radius, frictionDeceleration))});
     }
@@ -51,10 +48,10 @@ Table::Table(sf::Vector2u window_size, sf::Vector2i offsets)
         balls.insert({id,BallStatus(Ball(id, pocket_radius, frictionDeceleration))});
     }
 
-    /* Tutte le palline sono colliders
+    // Tutte le palline sono colliders
     for(auto& entry : balls){
         colliders.push_back(&entry.second.ball);
-    } */
+    }
 
     // Stecca
     cue.setAnchor(&balls.find(BallIDRange::WHITE)->second.ball);

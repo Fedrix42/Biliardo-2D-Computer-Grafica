@@ -3,13 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "collider.h"
-/*
-Ball ID:
-| 1 - 7 Smooth
-| 8 Black
-| 9 - 15 Striped
-| 16 White
-*/
+
 enum BallIDRange {
     SMOOTH_START = 1,
     SMOOTH_STOP = 7,

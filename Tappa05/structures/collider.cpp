@@ -7,27 +7,20 @@ void rollbackPositions(Collider* c1, Collider* c2, sf::Vector2f c1p, sf::Vector2
     c2->setPosition(c2p);
 }
 
-std::optional<std::pair<Collision, Collision>> Collider::checkSegmentIntersection(sf::Vector2f A, sf::Vector2f B, sf::Vector2f C, sf::Vector2f D) const {
+std::optional<IntersectionResult> Collider::checkSegmentIntersection(sf::Vector2f A, sf::Vector2f B, sf::Vector2f C, sf::Vector2f D) const {
     std::optional<sf::Vector2f> impact_point = segment_intersection(A, B, C, D);
 
     if(impact_point){
         sf::Vector2f my_segment = B - A;
         sf::Vector2f collider_segment = D - C;
         sf::Vector2f my_normal = clkwise_rot(my_segment) / norm(my_segment); // Perpendiolare al segmento B - A
-        sf::Vector2f collider_normal = clkwise_rot(collider_segment) / norm(collider_segment);
+        sf::Vector2f collider_normal = counterclkwise_rot(collider_segment) / norm(collider_segment);
 
-        std::pair<Collision, Collision> result;
-        result.first = Collision{ // Aggiungi la collisione a me
-            sf::Time::Zero,
+        return IntersectionResult{ // Aggiungi la collisione a me
             my_normal,
-            *impact_point
-        };
-        result.second = Collision{ // Aggiungi la collisione al collider
-            sf::Time::Zero,
             collider_normal,
             *impact_point
         };
-        return result;
     }else {
         return std::nullopt;
     }
@@ -106,12 +99,25 @@ std::optional<std::pair<Collision, Collision>> Collider::computeCollisions(Colli
         while(walker.hasNext()){
             auto self_seg = walker.self_segment();
             auto coll_seg = walker.collider_segment();
-            auto intersection = checkSegmentIntersection(self_seg.first, self_seg.second, coll_seg.first, coll_seg.second);
-            if(intersection){
-                (*intersection).first.collision_time = current_t + simulation_t;
-                (*intersection).second.collision_time = current_t + simulation_t;
+            auto intersection_res = checkSegmentIntersection(self_seg.first, self_seg.second, coll_seg.first, coll_seg.second);
+            if(intersection_res){
+                std::pair<Collision, Collision> result;
+                result.first = Collision {
+                        current_t + simulation_t,
+                        (*intersection_res).self_normal,
+                        dot((*intersection_res).self_normal, speedAfterTime(getSpeed(), self_deceleration, simulation_t)),
+                        dot((*intersection_res).collider_normal, speedAfterTime(collider->getSpeed(), collider_deceleration, simulation_t)),
+                        (*intersection_res).collision_point
+                };
+                result.second = Collision {
+                        current_t + simulation_t,
+                        (*intersection_res).collider_normal,
+                        dot((*intersection_res).collider_normal, speedAfterTime(collider->getSpeed(), collider_deceleration, simulation_t)),
+                        dot((*intersection_res).self_normal, speedAfterTime(getSpeed(), self_deceleration, simulation_t)),
+                        (*intersection_res).collision_point
+                };
                 rollbackPositions(this, collider, self_old_pos, collider_old_pos);
-                return intersection;
+                return result;
             }
             walker.step();
         }
@@ -119,7 +125,7 @@ std::optional<std::pair<Collision, Collision>> Collider::computeCollisions(Colli
         simulation_t += step;
         float self_traveled = distanceOnTime(self_speed_module, self_deceleration, simulation_t);
         float collider_traveled = distanceOnTime(collider_speed_module, collider_deceleration, simulation_t);
-        if(self_traveled < 0.005f && collider_traveled < 0.0005f){
+        if(self_traveled < 0.000001f && collider_traveled < 0.000001f){
             break;
         }
         setPosition(self_old_pos + (self_traveled * my_normalized_speed));
@@ -127,19 +133,6 @@ std::optional<std::pair<Collision, Collision>> Collider::computeCollisions(Colli
     }
     rollbackPositions(this, collider, self_old_pos, collider_old_pos); // Importante: devo fare il rollback delle posizioni originali
     return std::nullopt;
-}
-
-
-
-float Collider::velocityAlongNormal(Collider* collider) const
-{
-    auto it = collisions.find(collider);
-    if(it != collisions.end()){
-        return dot(getSpeed(), it->second.normal);
-    }else {
-        throw std::logic_error("[ERROR] No collision with collider");
-    }
-
 }
 
 

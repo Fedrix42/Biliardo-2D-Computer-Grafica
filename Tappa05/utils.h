@@ -8,6 +8,7 @@
 // Calcolo della velocità finale di "A" in un urto elastico mono dimensionale
 float fnspeedA_1D(float massA, float massB, float inspeedA, float inspeedB);
 float distanceOnTime(float speed, float deceleration, sf::Time delta);
+sf::Vector2f speedAfterTime(sf::Vector2f speed, float deceleration, sf::Time delta);
 
 // Operazioni geometriche (non vettoriali)
 std::optional<sf::Vector2f> segment_intersection(sf::Vector2f A, sf::Vector2f B, sf::Vector2f C, sf::Vector2f D); // Restituisce null se non ci sono intersezioni o sono infinite
