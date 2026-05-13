@@ -15,10 +15,11 @@ enum BallIDRange {
 
 class Ball : public Collider {
 public:
-    Ball(unsigned id, float pocket_radius, float tableFrictionCoeff);
+    Ball(unsigned id, float pocket_radius, float tableFrictionCoeff, sf::Vector2f pos);
     void draw(sf::RenderWindow& window);
     void update(sf::Time current_t);
     float getRadius();
+    void resize(sf::Vector2f factors, float new_pocket_radius, sf::Vector2f new_offset, sf::Vector2f old_offset);
     float getMass() const override;
     sf::Vector2f getPosition() const override;
     sf::Vector2f getSpeed() const override;

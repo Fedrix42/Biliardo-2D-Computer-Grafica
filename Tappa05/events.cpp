@@ -1,12 +1,15 @@
 #include "events.h"
 
+
 // Window events
 void handle_close(sf::RenderWindow& window, GameState& state)
 {
     window.close();
 }
-void handle_resize(const sf::Event::Resized& resized, sf::RenderWindow& window)
+void handle_resize(const sf::Event::Resized* resized, sf::RenderWindow& window, GameState& state)
 {
+    window.setView(sf::View(sf::FloatRect({0, 0}, {static_cast<float>(resized->size.x), static_cast<float>(resized->size.y)})));
+    state.resize(resized->size);
 }
 
 // Keyboard events

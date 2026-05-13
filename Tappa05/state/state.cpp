@@ -3,9 +3,17 @@
 #include <iostream>
 
 GameState::GameState(Gamemode mode, sf::RenderWindow& window)
-    : table(window.getSize(), { 0, 0 }), current(GameplayState::PLAYER_ACTION), window(window)
-{
-}
+    : current(GameplayState::PLAYER_ACTION),
+    window(window),
+    panel(window.getSize()),
+    table({
+            static_cast<float>(window.getSize().x) - MIN_TABLE_MARGIN.x,
+            (static_cast<float>(window.getSize().x - MIN_TABLE_MARGIN.x) / 2.0f)
+        }, {
+            MIN_TABLE_MARGIN.x,
+            MIN_TABLE_MARGIN.y + panel.getHeight()
+        })
+{}
 
 /*
 Colpo tra la stecca e una pallina.
@@ -60,6 +68,40 @@ void  GameState::compute_collisions(sf::Time current_t){
     }
 }
 
+void GameState::resize(sf::Vector2u size){
+
+    // Voglio mantenere un rapporto di 2:1 col tavolo
+    panel.resize(size);
+    sf::FloatRect free_space = sf::FloatRect(
+        {MIN_TABLE_MARGIN.x, panel.getHeight() + MIN_TABLE_MARGIN.y},
+        {size.x - (2.0f * MIN_TABLE_MARGIN.x), size.y - panel.getHeight() - (2.0f * MIN_TABLE_MARGIN.y)}
+    );
+
+    float target_rateo = 2.0f / 1.0f;
+    float current_rateo = static_cast<float>(size.x - (2.0f * MIN_TABLE_MARGIN.x)) / static_cast<float>(size.y - panel.getHeight() - (2 * MIN_TABLE_MARGIN.y));
+    sf::Vector2f table_offset;
+    sf::Vector2f table_size;
+
+    if(target_rateo > current_rateo){ // Troppo alto
+        //std::cout  << "Troppo alto" << std::endl;
+        table_size.x = free_space.size.x;
+        table_size.y = table_size.x / 2.0f;
+        table_offset = {0,(free_space.size.y - table_size.y) / 2.0f};
+        table_offset += free_space.position;
+        //std::cout << point_to_str(table_size) << " - " << point_to_str(table_offset) << std::endl;
+    } else { // Troppo largo
+        //std::cout  << "Troppo largo" << std::endl;
+        table_size.y = free_space.size.y;
+        table_size.x = table_size.y * 2.0f;
+        table_offset = {(free_space.size.x - table_size.x) / 2.0f, 0};
+        table_offset += free_space.position;
+        //std::cout << point_to_str(table_size)<< " - " << point_to_str(table_offset) << std::endl;
+    }
+
+    table.resize(table_size, table_offset);
+
+}
+
 void GameState::update(sf::Time current_t)
 {
     table.update(current_t);
@@ -69,5 +111,6 @@ void GameState::update(sf::Time current_t)
 
 void GameState::draw(sf::RenderWindow& window)
 {
-    this->table.draw(window, current);
+    panel.draw(window);
+    table.draw(window, current);
 }

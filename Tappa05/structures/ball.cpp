@@ -9,16 +9,30 @@ Solitamente 284cm x 142cm con buche da 12.5cm
 Palline da 6cm, quindi in proporzione la metà di una buca
 */
 
-Ball::Ball(unsigned id, float pocket_radius, float tableFrictionCoeff)
+Ball::Ball(unsigned int id, float pocket_radius, float tableFrictionCoeff, sf::Vector2f pos)
 {
     this->id = id;
     float r = pocket_radius / 2;
     shape.setRadius(r);
     shape.setOrigin({r, r});
-    shape.setPosition({100 + 30*static_cast<float>(id), 100});
+    shape.setPosition(pos);
     shape.setTexture(AssetMGR::instance().get_ball_texture(id));
     frictionDeceleration = tableFrictionCoeff; // Ipotizzo il coefficiente di attrito sia uguale per tutte le palline e sia quello del tavolo
 }
+
+void Ball::resize(sf::Vector2f factors, float new_pocket_radius, sf::Vector2f new_offset, sf::Vector2f old_offset)
+{
+
+    std::cout << point_to_str(new_offset) << " -- " << point_to_str(factors) << std::endl;
+    float r = new_pocket_radius / 2;
+    shape.setRadius(r);
+    shape.setOrigin({r, r});
+    auto rel_pos = shape.getPosition() - old_offset;
+    rel_pos.x *= factors.x;
+    rel_pos.y *= factors.y;
+    shape.setPosition(new_offset + rel_pos);
+}
+
 
 float Ball::getRadius()
 {
@@ -100,14 +114,12 @@ float Ball::getMass() const
     return mass;
 }
 
-
-
 std::vector<sf::Vector2f> Ball::getHitbox() const {
     const int sides = 8;
     std::vector<sf::Vector2f> res;
     float angle = 2.0f * PI / static_cast<float>(sides);
     sf::Vector2f radius_vec = {0, -shape.getRadius()};
-    sf::Vector2f position = shape.getPosition();
+    sf::Vector2f position = getPosition();
 
     for (int i = 0; i < sides; i++) {
         res.push_back(radius_vec + position);
@@ -119,7 +131,7 @@ std::vector<sf::Vector2f> Ball::getHitbox() const {
 
 sf::FloatRect Ball::getBoundBox() const
 {
-    sf::Vector2f pos = shape.getPosition();
+    sf::Vector2f pos = getPosition();
     float r = shape.getRadius();
     r = r * 1.5f; // Aumento il raggio per fare una bounding box più grande ed identificare meglio gli urti a grandi velocità
     return sf::FloatRect({pos.x - r, pos.y - r}, {2*r, 2*r});
@@ -149,4 +161,5 @@ std::string Ball::to_string() const {
                      + point_to_str(getBoundBox().size)
     + "]");
 }
+
 

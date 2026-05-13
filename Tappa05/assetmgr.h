@@ -7,6 +7,7 @@
 class AssetMGR {
 public:
 	static AssetMGR& instance();
+	sf::Texture* background_texture();
 	sf::Texture* table_texture();
 	sf::Texture* table_wall_texture();
 	sf::Texture* table_pocket_texture();
@@ -14,6 +15,7 @@ public:
 	sf::Texture* get_ball_texture(unsigned id);
 private:
 	AssetMGR(); // Nascondo il costruttore per usare il singleton
+	sf::Texture* background;
 	sf::Texture* table;
 	sf::Texture* table_walls;
 	sf::Texture* table_pockets;

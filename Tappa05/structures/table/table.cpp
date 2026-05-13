@@ -8,14 +8,18 @@ Propozioni di un tavolo da biliardo: Width 2 : Height 1
 Solitamente 284cm x 142cm con buche da 12.5cm
 */
 
-Table::Table(sf::Vector2u window_size, sf::Vector2i offsets)
+Table::Table(sf::Vector2f table_size, sf::Vector2f offset)
 {
+    assert(table_size.x == table_size.y * 2);
     // Tavolo
-    shape.setSize({ static_cast<float>(window_size.x), static_cast<float>(window_size.y) });
+    shape.setPosition(offset);
+    shape.setSize(table_size);
+
     shape.setTexture(AssetMGR::instance().table_texture());
     // Buche
     for (unsigned id = 0; id < 6; id++) {
-        pockets.emplace_back(Pocket(id, window_size));
+        Pocket pt = Pocket(id, table_size, offset);;
+        pockets.emplace_back(pt);
     }
     // Muri
     for (unsigned id = 0; id < 6; id++) {
@@ -29,24 +33,32 @@ Table::Table(sf::Vector2u window_size, sf::Vector2i offsets)
         } else {
             direction = {1, 0};
         }
-        walls.emplace_back(TableWall(id, pockets.at((id + 1) % 6), pockets.at(id), direction));
+        walls.emplace_back(TableWall(id, &pockets.at((id + 1) % 6), &pockets.at(id), direction));
     }
     for(auto& wall : walls){
         colliders.push_back(&wall);
     }
 
-
-    // Palline
+    // Palline costruite con ordine triangolare
     float pocket_radius = pockets.at(0).getRadius();
-    balls.insert({BallIDRange::WHITE, BallStatus(Ball(BallIDRange::WHITE, pocket_radius, frictionDeceleration))});
-    balls.insert({BallIDRange::BLACK, BallStatus(Ball(BallIDRange::BLACK, pocket_radius, frictionDeceleration))});
-
+    sf::Vector2f triangle = shape.getPosition() + sf::Vector2f{
+        (shape.getSize().x * (2.0f / 3.0f)),
+        shape.getSize().y / 2.0f
+    };
+    float temp = 50;
+    balls.insert({BallIDRange::WHITE, BallStatus(Ball(BallIDRange::WHITE, pocket_radius, frictionDeceleration, triangle))});
+    balls.insert({BallIDRange::BLACK, BallStatus(Ball(BallIDRange::BLACK, pocket_radius, frictionDeceleration, triangle - sf::Vector2f{temp, 0}))});
+    float idder = 2;
     for (unsigned id = BallIDRange::SMOOTH_START; id <= BallIDRange::SMOOTH_STOP; id++) {
-        balls.insert({id,BallStatus(Ball(id, pocket_radius, frictionDeceleration))});
+        balls.insert({id,BallStatus(Ball(id, pocket_radius, frictionDeceleration, triangle - sf::Vector2f{idder * temp, 0}))});
+        idder++;
     }
     for (unsigned id = BallIDRange::STRIPED_START; id <= BallIDRange::STRIPED_STOP; id++) {
-        balls.insert({id,BallStatus(Ball(id, pocket_radius, frictionDeceleration))});
+        balls.insert({id,BallStatus(Ball(id, pocket_radius, frictionDeceleration, triangle - sf::Vector2f{idder * temp, 0}))});
+        idder++;
     }
+
+
 
     // Tutte le palline sono colliders
     for(auto& entry : balls){
@@ -56,6 +68,32 @@ Table::Table(sf::Vector2u window_size, sf::Vector2i offsets)
     // Stecca
     cue.setAnchor(&balls.find(BallIDRange::WHITE)->second.ball);
 }
+
+void Table::resize(sf::Vector2f table_size, sf::Vector2f offset){
+    assert(table_size.x == table_size.y * 2);
+    auto old_table_size = shape.getSize();
+    auto old_table_pos = shape.getPosition();
+    shape.setPosition(offset);
+    shape.setSize(table_size);
+
+    for(Pocket& pocket : pockets){
+        pocket.resize(table_size, offset);
+    }
+    for(TableWall& wall : walls){
+        wall.resize();
+    }
+    float pocketr = pockets.at(0).getRadius();
+    for(auto& entry : balls){
+        entry.second.ball.resize(
+            {table_size.x / old_table_size.x, table_size.y / old_table_size.y},
+            pocketr,
+            shape.getPosition(),
+            old_table_pos
+        );
+    }
+
+}
+
 
 void Table::draw(sf::RenderWindow& window, GameplayState currentGS)
 {

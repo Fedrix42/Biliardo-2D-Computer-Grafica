@@ -2,16 +2,22 @@
 #include "../../assetmgr.h"
 #include "../../utils.h"
 
-TableWall::TableWall(unsigned id, Pocket left, Pocket right, sf::Vector2f direction)
+TableWall::TableWall(unsigned id, Pocket* left, Pocket* right, sf::Vector2f direction)
+: direction(direction), left(left), right(right)
 {
     this->id = id;
-    sf::Vector2f leftp = left.getPosition();
-    sf::Vector2f rightp = right.getPosition();
-    float leftr = left.getRadius();
-    float rightr = right.getRadius();
-
     shape.setFillColor(sf::Color(183, 131, 9));
     shape.setPointCount(4);
+    shape.setTexture(AssetMGR::instance().table_wall_texture());
+    resize();
+}
+
+void TableWall::resize()
+{
+    sf::Vector2f leftp = left->getPosition();
+    sf::Vector2f rightp = right->getPosition();
+    float leftr = left->getRadius();
+    float rightr = right->getRadius();
 
     // Left
     sf::Vector2f shape_point0 = (opposite(direction) * leftr) + leftp;
@@ -30,11 +36,11 @@ TableWall::TableWall(unsigned id, Pocket left, Pocket right, sf::Vector2f direct
     shape.setPoint(1, shape_point1);
     shape.setPoint(2, shape_point2);
     shape.setPoint(3, shape_point3);
-
-    shape.setTexture(AssetMGR::instance().table_wall_texture());
     shape.setOrigin(shape.getPoint(0));
     shape.setPosition(shape.getPoint(0));
+
 }
+
 
 void TableWall::draw(sf::RenderWindow& window)
 {

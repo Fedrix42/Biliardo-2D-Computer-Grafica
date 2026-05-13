@@ -1,10 +1,11 @@
-#include "main.h"
-#include "events.h"
-#include "state/state.h"
 #include <SFML/Graphics.hpp>
 #include <atomic>
 #include <csignal>
 #include <iostream>
+#include "main.h"
+#include "events.h"
+#include "state/state.h"
+#include "assetmgr.h"
 
 std::atomic<bool> termination_signal_receive(false);
 
@@ -20,13 +21,19 @@ int main()
     sf::RenderWindow window(sf::VideoMode({ DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT }), WINDOW_TITLE);
     GameState state = GameState(Gamemode::SINGLE_PLAYER, window);
     window.setMinimumSize(window.getSize());
-    window.setFramerateLimit(140);
+    window.setFramerateLimit(240);
+
+    sf::Sprite background(*AssetMGR::instance().background_texture());
+
+
     sf::Clock clock;
     clock.start();
     while (window.isOpen() && !termination_signal_receive) {
         while (const std::optional event_opt = window.pollEvent()) {
             if (event_opt->is<sf::Event::Closed>()) {
                 handle_close(window, state);
+            } else if (const auto* event = event_opt->getIf<sf::Event::Resized>()) {
+                handle_resize(event, window, state);
             } else if (const auto* event = event_opt->getIf<sf::Event::KeyPressed>()) {
                 handle_key_pressed(event, window, state);
             } else if (const auto* event = event_opt->getIf<sf::Event::KeyReleased>()) {
@@ -50,6 +57,7 @@ int main()
 
         state.update(clock.getElapsedTime());
         window.clear(sf::Color::Black);
+        window.draw(background);
         state.draw(window);
         window.display();
     }

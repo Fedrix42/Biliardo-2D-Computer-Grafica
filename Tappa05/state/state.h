@@ -3,6 +3,7 @@
 #include "../structures/table/table.h"
 #include <SFML/Graphics.hpp>
 #include "gpstate.h"
+#include "panel.h"
 
 enum Gamemode {
     SINGLE_PLAYER,
@@ -11,17 +12,21 @@ enum Gamemode {
 
 
 class GameState {
-public:
-    GameState(Gamemode mode, sf::RenderWindow& window);
-    void draw(sf::RenderWindow& window);
-    Table table;
-    void shot();
-    void update(sf::Time time);
-    GameplayState getCurrentGameplayState();
 private:
+    const sf::Vector2f MIN_TABLE_MARGIN = {50, 50};
     void compute_collisions(sf::Time current_t);
     GameplayState current;
     sf::RenderWindow& window;
+public:
+    GameState(Gamemode mode, sf::RenderWindow& window);
+    void draw(sf::RenderWindow& window);
+    Panel panel;
+    Table table;
+    void resize(sf::Vector2u size);
+    void shot();
+    void update(sf::Time time);
+    GameplayState getCurrentGameplayState();
+
 };
 
 #endif
