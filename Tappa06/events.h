@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 void handle_close(sf::RenderWindow& window, GameState& state);
-void handle_resize(const sf::Event::Resized* resized, sf::RenderWindow& window, GameState& state);
+void handle_resize(const sf::Event::Resized* resized, sf::RenderWindow& window, GameState& state, sf::Sprite* background);
 
 void handle_key_pressed(const sf::Event::KeyPressed* pressed, sf::RenderWindow& window, GameState& state);
 void handle_key_released(const sf::Event::KeyReleased* released, sf::RenderWindow& window, GameState& state);

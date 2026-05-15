@@ -24,6 +24,8 @@ public:
     Table table;
     void resize(sf::Vector2u size);
     void shot();
+    void set_shot_speed_delta(float delta);
+    float shot_speed = 100; // ps / s
     void update(sf::Time time);
     GameplayState getCurrentGameplayState();
 

@@ -15,49 +15,29 @@ GameState::GameState(Gamemode mode, sf::RenderWindow& window)
         })
 {}
 
-/*
-Colpo tra la stecca e una pallina.
-Implementato con un urto monodimensionale:
-
-Data:
-    - La massa della stecca
-    - La velocità iniziale (al momento dell'impatto) della stecca
-    - La massa della pallina
-    - La velocità della palline (0 px / s)
-
-Calcolo la velocità finale di stecca e pallina.
-La velocità finale della pallina, che è quella che ci interessa, è un numero in pixel al secondo.
-A questa norma gli applico la direzione del tiro, presa dalla stecca, così da avere una velocità
-definita bidimensionale in quanto questa è quella che si usa per i calcoli negli urti bidimensionali
-che userò per i rimbalzi.
-*/
-
 void GameState::shot(){
+    /*
     if(current == GameplayState::SIMULATION)
         return; // Non si puo colpire nuovamente durante la simulazione. Bisogna aspettare termini.
     current = GameplayState::SIMULATION;
     Cue cue = table.cue;
     Ball* ball = cue.getAnchor();
 
-    // float cue_final_speed = fnspeedA_1D(cue.getMass(), ball->getMass(), cue.getSpeed(), 0); Utile per l'animazione di rimbalzo
-    // cue_final_speed = meter_to_pixel(cue_final_speed);
-    float ball_final_speed = fnspeedA_1D(ball->getMass(), cue.getMass(), 0, cue.getSpeed());
+    float ball_final_speed = fnspeedA_1D(ball->getMass(), cue.getMass(), 0, shot_speed);
     sf::Vector2f vectorized_ball_speed = cue.getDirection() * ball_final_speed;
-    std::cout << "Colpendo a " << cue.getSpeed() << " px/s la velocità finale della pallina è "
-        << ball_final_speed << " px/s ("
-        << vectorized_ball_speed.x << "," << vectorized_ball_speed.y << ")" << std::endl;
-
+    std::cout << "Colpendo a " << shot_speed << " px/s la velocità finale della pallina è " << ball_final_speed << " px/s" << std::endl;
     ball->setSpeed(vectorized_ball_speed);
+    */
 }
 
 void  GameState::compute_collisions(sf::Time current_t){
-    auto balls = table.getBalls();
+    auto balls = table.getBallsOnTable();
     auto walls = table.getWalls();
     for(Ball* b : balls){
         for(TableWall* w : walls){
             //std::cout << std::boolalpha << doesBoundBoxesCollide(b, w) << std::endl;
             if(doesBoundBoxesCollide(b, w) && b->walls_collisions.find(w) == b->walls_collisions.end()){
-                std::cout << b->to_string() << std::endl;
+                // std::cout << b->to_string() << std::endl;
                 auto res = computeCollision(b, w, current_t);
                 if(res){
                     b->walls_collisions[w] = (*res);
@@ -119,6 +99,12 @@ void GameState::resize(sf::Vector2u size){
     table.resize(table_size, table_offset);
 
 }
+
+void GameState::set_shot_speed_delta(float delta)
+{
+    shot_speed += (delta + 10);
+}
+
 
 void GameState::update(sf::Time current_t)
 {

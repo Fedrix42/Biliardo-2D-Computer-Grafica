@@ -26,7 +26,8 @@ public:
     void update(sf::Time time);
     const float REAL_TABLE_WIDTH = 2.84; // metri
     const float REAL_TABLE_HEIGHT = 1.42;
-    std::vector<Ball*> getBalls();
+    void reset();
+    std::vector<Ball*> getBallsOnTable();
     std::vector<TableWall*> getWalls();
     sf::Vector2f offset; // Posizione del tavolo rispetto il viewport
 private:

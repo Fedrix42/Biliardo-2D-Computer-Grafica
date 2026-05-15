@@ -6,10 +6,17 @@ void handle_close(sf::RenderWindow& window, GameState& state)
 {
     window.close();
 }
-void handle_resize(const sf::Event::Resized* resized, sf::RenderWindow& window, GameState& state)
+void handle_resize(const sf::Event::Resized* resized, sf::RenderWindow& window, GameState& state, sf::Sprite* background)
 {
     window.setView(sf::View(sf::FloatRect({0, 0}, {static_cast<float>(resized->size.x), static_cast<float>(resized->size.y)})));
+    // Dimensione texture
+    sf::Vector2u textureSize = background->getTexture().getSize();
+    background->setScale({
+        static_cast<float>(resized->size.x) / textureSize.x,
+        static_cast<float>(resized->size.y) / textureSize.y
+    });
     state.resize(resized->size);
+
 }
 
 // Keyboard events
@@ -36,16 +43,17 @@ void handle_mouse_released(const sf::Event::MouseButtonReleased* released, sf::R
 }
 void handle_mouse_moved(const sf::Event::MouseMoved* moved, sf::RenderWindow& window, GameState& state)
 {
-    state.table.cue.update_position(moved);
+    state.table.cue.update(moved);
 }
 void handle_mouse_wheel_scrolled(const sf::Event::MouseWheelScrolled* wheel_scrolled, sf::RenderWindow& window, GameState& state)
 {
+    state.set_shot_speed_delta(wheel_scrolled->delta);
 }
 
 void handle_mouse_left(const sf::Event::MouseLeft* event, sf::RenderWindow&window, GameState& state){
-    state.table.cue.setHide(false);
+    state.table.cue.hide = false;
 }
 
 void handle_mouse_entered(const sf::Event::MouseEntered* event, sf::RenderWindow&window, GameState& state){
-    state.table.cue.setHide(true);
+    state.table.cue.hide = true;
 }

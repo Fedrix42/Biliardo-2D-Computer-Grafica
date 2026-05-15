@@ -31,6 +31,7 @@ public:
     sf::FloatRect getBoundBox() const;
     std::unordered_map<Ball*, Collision> balls_collisions;
     std::unordered_map<TableWall*, Collision> walls_collisions;
+    unsigned getID();
 private:
     sf::Vector2f speed; // px/s
     bool is_smooth();

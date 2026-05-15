@@ -96,7 +96,7 @@ void Ball::update(sf::Time current_t){
             // Calcolo la componente finale lungo la linea di impatto
             float my_final_velocity_alongn = fnspeedA_1D(getMass(), collider_ball->getMass(), my_start_velocity_alongn, against_start_velocity_alongn);
             float my_delta_velocity_alongn = fabsf(my_final_velocity_alongn - my_start_velocity_alongn);
-            std::cout << to_string() << ": " << point_to_str(unitary_normal_vector) << " - " << my_start_velocity_alongn << " - " << my_delta_velocity_alongn << std::endl;
+            // std::cout << to_string() << ": " << point_to_str(unitary_normal_vector) << " - " << my_start_velocity_alongn << " - " << my_delta_velocity_alongn << std::endl;
             speed += unitary_normal_vector*my_delta_velocity_alongn;
 
             c.applied = true;
@@ -179,6 +179,11 @@ std::string Ball::to_string() const {
                      + point_to_str(getBoundBox().position)
                      + point_to_str(getBoundBox().size)
     + "]");
+}
+
+unsigned int Ball::getID()
+{
+    return id;
 }
 
 
