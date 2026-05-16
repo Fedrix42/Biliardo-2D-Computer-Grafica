@@ -13,26 +13,22 @@ GameState::GameState(Gamemode mode, sf::RenderWindow& window)
             MIN_TABLE_MARGIN.x,
             MIN_TABLE_MARGIN.y + panel.getHeight()
         })
-{}
-
-void GameState::shot(){
-    /*
-    if(current == GameplayState::SIMULATION)
-        return; // Non si puo colpire nuovamente durante la simulazione. Bisogna aspettare termini.
-    current = GameplayState::SIMULATION;
-    Cue cue = table.cue;
-    Ball* ball = cue.getAnchor();
-
-    float ball_final_speed = fnspeedA_1D(ball->getMass(), cue.getMass(), 0, shot_speed);
-    sf::Vector2f vectorized_ball_speed = cue.getDirection() * ball_final_speed;
-    std::cout << "Colpendo a " << shot_speed << " px/s la velocità finale della pallina è " << ball_final_speed << " px/s" << std::endl;
-    ball->setSpeed(vectorized_ball_speed);
-    */
+{
+    panel.setMiddle(std::to_string(shot_speed));
 }
 
-void  GameState::compute_collisions(sf::Time current_t){
+void GameState::shot(){
+    table.cue.shot(shot_speed);
+    current = SIMULATION;
+}
+
+void  GameState::compute_collisions(sf::Time current_t, std::optional<Ball> cue_tip){
     auto balls = table.getBallsOnTable();
     auto walls = table.getWalls();
+    if(cue_tip){
+        balls.push_back(&(*cue_tip));
+    }
+
     for(Ball* b : balls){
         for(TableWall* w : walls){
             //std::cout << std::boolalpha << doesBoundBoxesCollide(b, w) << std::endl;
@@ -102,14 +98,21 @@ void GameState::resize(sf::Vector2u size){
 
 void GameState::set_shot_speed_delta(float delta)
 {
-    shot_speed += (delta + 10);
+    float min_step = (delta > 0) ? 5 : -5;
+    shot_speed += (delta + min_step);
+    if(shot_speed < 0){
+        shot_speed = 5;
+    }else if(shot_speed > 600){
+        shot_speed = 600;
+    }
+    panel.setMiddle(std::to_string(shot_speed));
 }
 
 
 void GameState::update(sf::Time current_t)
 {
     table.update(current_t);
-    compute_collisions(current_t);
+    compute_collisions(current_t, table.cue.advance(current_t));
 }
 
 
@@ -118,3 +121,9 @@ void GameState::draw(sf::RenderWindow& window)
     panel.draw(window);
     table.draw(window, current);
 }
+
+GameplayState GameState::getCurrentGameplayState()
+{
+    return current;
+}
+

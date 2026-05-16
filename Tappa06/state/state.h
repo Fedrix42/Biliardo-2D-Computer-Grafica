@@ -14,7 +14,7 @@ enum Gamemode {
 class GameState {
 private:
     const sf::Vector2f MIN_TABLE_MARGIN = {50, 50};
-    void compute_collisions(sf::Time current_t);
+    void compute_collisions(sf::Time current_t, std::optional<Ball> cue_tip);
     GameplayState current;
     sf::RenderWindow& window;
 public:

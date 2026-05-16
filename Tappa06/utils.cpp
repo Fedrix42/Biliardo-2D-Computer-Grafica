@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <iostream>
 // Fisica
 
 /*
@@ -118,7 +119,12 @@ float dot(sf::Vector2f a, sf::Vector2f b){
 
 
 // Altro
-
-std::string point_to_str(sf::Vector2f p){
+std::string point_to_str(sf::Vector2f p)
+{
     return "(" + std::to_string(p.x) + "," + std::to_string(p.y) + ")";
+}
+
+
+void debug(sf::Vector2f p){
+    std::cout << point_to_str(p) << std::endl;
 }

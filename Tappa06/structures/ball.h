@@ -10,7 +10,9 @@ enum BallIDRange {
     BLACK = 8,
     STRIPED_START = 9,
     STRIPED_STOP = 15,
-    WHITE = 16
+    WHITE = 16,
+    TOTAL_START = 1,
+    TOTAL_STOP = 16
 };
 
 class Ball {

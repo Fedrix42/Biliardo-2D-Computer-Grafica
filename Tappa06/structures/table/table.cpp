@@ -124,9 +124,7 @@ void Table::draw(sf::RenderWindow& window, GameplayState currentGS)
             entry.second.ball.draw(window);
         }
     }
-    if(currentGS != GameplayState::SIMULATION){
-        cue.draw(window);
-    }
+    cue.draw(window);
 }
 
 void Table::update(sf::Time time){

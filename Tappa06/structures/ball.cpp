@@ -16,7 +16,9 @@ Ball::Ball(unsigned int id, float pocket_radius, float tableFrictionCoeff, sf::V
     shape.setRadius(r);
     shape.setOrigin({r, r});
     shape.setPosition(pos);
-    shape.setTexture(AssetMGR::instance().get_ball_texture(id));
+    if(id >= BallIDRange::TOTAL_START && id <= BallIDRange::TOTAL_STOP ){ // ID negativo rappresenta pallina virtuali (Come la punta della stecca)
+        shape.setTexture(AssetMGR::instance().get_ball_texture(id));
+    }
     frictionDeceleration = tableFrictionCoeff; // Ipotizzo il coefficiente di attrito sia uguale per tutte le palline e sia quello del tavolo
 }
 

@@ -24,6 +24,10 @@ void handle_key_pressed(const sf::Event::KeyPressed* pressed, sf::RenderWindow& 
 {
     if(pressed->code == sf::Keyboard::Key::K){
         state.shot();
+    } else if(pressed->code == sf::Keyboard::Key::D){
+        state.table.cue.rotate(true);
+    } else if(pressed->code == sf::Keyboard::Key::A){
+        state.table.cue.rotate(false);
     }
 }
 void handle_key_released(const sf::Event::KeyReleased* released, sf::RenderWindow& window, GameState& state)
@@ -43,7 +47,10 @@ void handle_mouse_released(const sf::Event::MouseButtonReleased* released, sf::R
 }
 void handle_mouse_moved(const sf::Event::MouseMoved* moved, sf::RenderWindow& window, GameState& state)
 {
-    state.table.cue.update(moved);
+    if(state.getCurrentGameplayState() == GameplayState::PLAYER_ACTION){
+        state.table.cue.update(moved);
+    }
+
 }
 void handle_mouse_wheel_scrolled(const sf::Event::MouseWheelScrolled* wheel_scrolled, sf::RenderWindow& window, GameState& state)
 {
@@ -51,9 +58,9 @@ void handle_mouse_wheel_scrolled(const sf::Event::MouseWheelScrolled* wheel_scro
 }
 
 void handle_mouse_left(const sf::Event::MouseLeft* event, sf::RenderWindow&window, GameState& state){
-    state.table.cue.hide = false;
+    state.table.cue.hide = true;
 }
 
 void handle_mouse_entered(const sf::Event::MouseEntered* event, sf::RenderWindow&window, GameState& state){
-    state.table.cue.hide = true;
+    state.table.cue.hide = false;
 }
