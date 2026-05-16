@@ -22,7 +22,7 @@ Cue::Cue(sf::Vector2f position)
 }
 
 void Cue::update(const sf::Event::MouseMoved* moved){
-    if(shotting) return;
+    if(shooting) return;
     sf::Vector2f mouse = {static_cast<float>(moved->position.x), static_cast<float>(moved->position.y)};
     switch(type){
         case CueType::FREE:
@@ -57,7 +57,7 @@ void Cue::update(const sf::Event::MouseMoved* moved){
 void Cue::shot(float speed)
 {
     this->speed = speed;
-    shotting = true;
+    shooting = true;
 }
 
 std::optional<Ball> Cue::advance(sf::Time current_t)
@@ -66,7 +66,7 @@ std::optional<Ball> Cue::advance(sf::Time current_t)
         Animazione del colpo e materializzazione della pallina per le collisioni nell'ultimo istante dell'animazione
         L'animazione deve far andare indietro la stecca per 1 secondo e poi farla tornare avanti
     */
-    if(shotting){
+    if(shooting){
         if(shot_start_animation == sf::Time::Zero){
             shot_start_animation = current_t;
         }
@@ -80,7 +80,7 @@ std::optional<Ball> Cue::advance(sf::Time current_t)
                 // Animazione terminata
                 Ball materialized = Ball(99, tip.getRadius(), 1, tip.getPosition() + travel);
                 materialized.setSpeed(direction * speed); // La vera velocità del colpo (Non quella animazione)
-                shotting = false;
+                shooting = false;
                 backward = true;
                 shot_start_animation = sf::Time::Zero;
                 return materialized;
@@ -111,9 +111,15 @@ void Cue::rotate(bool clockwise)
 
 void Cue::draw(sf::RenderWindow& window)
 {
-    if(!hide || shotting){
+    if(!hide || shooting){
         window.draw(body);
         window.draw(tip);
     }
 }
+
+bool Cue::isShooting()
+{
+    return shooting;
+}
+
 

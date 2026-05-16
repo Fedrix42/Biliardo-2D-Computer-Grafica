@@ -85,6 +85,20 @@ void Table::reset()
     }
 }
 
+void Table::reset_white()
+{
+    balls.at(BallIDRange::WHITE).pocket = nullptr;
+    balls.at(BallIDRange::WHITE).counted = false;
+    auto& white = balls.at(BallIDRange::WHITE).ball;
+    white.setPosition(shape.getPosition() + sf::Vector2f{
+            shape.getSize().x / 3.0f,
+            shape.getSize().y / 2.0f
+        }
+    );
+    white.setSpeed({0, 0});
+}
+
+
 
 void Table::resize(sf::Vector2f table_size, sf::Vector2f offset){
     assert(table_size.x == table_size.y * 2);

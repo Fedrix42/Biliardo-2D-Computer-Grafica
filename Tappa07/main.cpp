@@ -35,7 +35,7 @@ int main()
             } else if (const auto* event = event_opt->getIf<sf::Event::Resized>()) {
                 handle_resize(event, window, state, &background);
             } else if (const auto* event = event_opt->getIf<sf::Event::KeyPressed>()) {
-                handle_key_pressed(event, window, state);
+                handle_key_pressed(event, window, state, clock.getElapsedTime());
             } else if (const auto* event = event_opt->getIf<sf::Event::KeyReleased>()) {
                 handle_key_released(event, window, state);
             } else if (const auto* event = event_opt->getIf<sf::Event::MouseButtonPressed>()) {

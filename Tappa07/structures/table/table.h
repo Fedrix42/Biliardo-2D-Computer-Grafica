@@ -14,6 +14,7 @@ struct BallStatus {
     BallStatus(Ball b) : ball(b), pocket(nullptr) {}
     Ball ball;
     Pocket* pocket;
+    bool counted = false; // Ci dice se la pallina è già stata usata per i contaggi sul gameplay (usato da state.cpp)
 };
 
 class Table {
@@ -26,15 +27,16 @@ public:
     const float REAL_TABLE_WIDTH = 2.84; // metri
     const float REAL_TABLE_HEIGHT = 1.42;
     void reset();
+    void reset_white();
     std::vector<Ball*> getBallsOnTable();
     std::vector<TableWall*> getWalls();
+    std::unordered_map<unsigned, BallStatus> balls;
     sf::Vector2f offset; // Posizione del tavolo rispetto il viewport
 private:
     float frictionDeceleration = 30.3f; // Coefficiente di attrito
     sf::RectangleShape shape;
     std::vector<Pocket> pockets; // Buche
     std::vector<TableWall> walls; // Muri
-    std::unordered_map<unsigned, BallStatus> balls;
 };
 
 #endif

@@ -21,6 +21,7 @@ public:
     void draw(sf::RenderWindow& window);
     void shot(float speed);
     std::optional<Ball> advance(sf::Time current_t); // Restituisce una pallina virtuale da far collidere con le altre
+    bool isShooting();
     bool hide;
     void rotate(bool clockwise);
     Ball* anchor;
@@ -29,7 +30,7 @@ private:
     float mass = 0.5; // 0.5 kg
     sf::RectangleShape body;
     sf::CircleShape tip;
-    bool shotting = false;
+    bool shooting = false;
     sf::Vector2f direction; // Direzione del colpo normalizzata
     float speed;
     bool backward = true;

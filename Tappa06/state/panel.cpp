@@ -4,38 +4,41 @@ Panel::Panel(sf::Vector2u window_size)
 : font("./railway.ttf"), left(font), right(font), middle(font)
 {
     background.setFillColor(sf::Color(117,117,105));
-    left.setFillColor(sf::Color::White);
-    middle.setFillColor(sf::Color::White);
-    right.setFillColor(sf::Color::White);
+    left.text.setFillColor(sf::Color::White);
+    middle.text.setFillColor(sf::Color::White);
+    right.text.setFillColor(sf::Color::White);
     resize(window_size);
 }
 
-void Panel::setLeft(std::string gm)
+void Panel::setLeft(std::string gm, bool blink)
 {
-    left.setString(gm);
+    left.text.setString(gm);
+    left.blink = blink;
 }
 
-void Panel::setRight(std::string pl)
+void Panel::setRight(std::string pl, bool blink)
 {
-    right.setString(pl);
+    right.text.setString(pl);
+    right.blink = blink;
 }
 
-void Panel::setMiddle(std::string sh)
+void Panel::setMiddle(std::string sh, bool blink)
 {
-    middle.setString(sh);
+    middle.text.setString(sh);
+    middle.blink = blink;
 }
 
 void Panel::resize(sf::Vector2u size){
     background.setSize({static_cast<float>(size.x), static_cast<float>(size.y) / 20});
 
-    left.setCharacterSize(background.getSize().y * 0.75f);
-    left.setPosition({0 + xmargin, 0});
+    left.text.setCharacterSize(background.getSize().y * 0.75f);
+    left.text.setPosition({0 + xmargin, 0});
 
-    middle.setCharacterSize(background.getSize().y * 0.75f);
-    middle.setPosition({static_cast<float>(size.x) / 2, 0});
+    middle.text.setCharacterSize(background.getSize().y * 0.75f);
+    middle.text.setPosition({static_cast<float>(size.x) / 2 - (middle.text.getLocalBounds().size.x / 2.0f), 0});
 
-    right.setCharacterSize(background.getSize().y * 0.75f);
-    right.setPosition({static_cast<float>(size.x) - right.getLocalBounds().size.x - xmargin, 0});
+    right.text.setCharacterSize(background.getSize().y * 0.75f);
+    right.text.setPosition({static_cast<float>(size.x) - right.text.getLocalBounds().size.x - xmargin, 0});
 }
 
 float Panel::getHeight()
@@ -43,12 +46,23 @@ float Panel::getHeight()
     return background.getSize().y;
 }
 
+void draw_l(sf::RenderWindow& window, Label l){
+    if(l.blink){
+        if(l.show){
+            window.draw(l.text);
+        }
+        l.show = !l.show;
+    } else {
+        window.draw(l.text);
+    }
+
+}
 
 void Panel::draw(sf::RenderWindow& window)
 {
     window.draw(background);
-    window.draw(left);
-    window.draw(middle);
-    window.draw(right);
+    draw_l(window, left);
+    draw_l(window, right);
+    draw_l(window, middle);
 }
 

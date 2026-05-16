@@ -20,10 +20,10 @@ void handle_resize(const sf::Event::Resized* resized, sf::RenderWindow& window, 
 }
 
 // Keyboard events
-void handle_key_pressed(const sf::Event::KeyPressed* pressed, sf::RenderWindow& window, GameState& state)
+void handle_key_pressed(const sf::Event::KeyPressed* pressed, sf::RenderWindow& window, GameState& state, sf::Time current_t)
 {
     if(pressed->code == sf::Keyboard::Key::K){
-        state.shot();
+        state.shot(current_t);
     } else if(pressed->code == sf::Keyboard::Key::D){
         state.table.cue.rotate(true);
     } else if(pressed->code == sf::Keyboard::Key::A){

@@ -7,9 +7,15 @@
 
 struct Player {
     std::string name;
-    unsigned int remaining; // Numero di palline da imbucare rimanenti
-    unsigned int mistakes; // Numero di falli effettuati
+    unsigned int remaining;
+    unsigned int mistakes = 0; // Numero di falli effettuati
     std::string to_string();
+};
+
+struct ShotState {
+    sf::Time shot_time;
+    float shot_speed = 100;
+    std::vector<Ball*> hitted_by;
 };
 
 
@@ -21,8 +27,10 @@ private:
     Player bob;
     Player alice;
     Player* current;
+    bool game_ended = false;
     void applyConfig();
-    void computeRoundResult(std::vector<Ball*> hitted_by_cue);
+    void computeRoundResult();
+    void increase_mistakes();
 public:
     GameState(sf::RenderWindow& window);
     void draw(sf::RenderWindow& window);
@@ -30,12 +38,11 @@ public:
     Table table;
     void resize(sf::Vector2u size);
     GameConfig config;
-    void shot();
+    void shot(sf::Time current_t);
     void set_shot_speed_delta(float delta);
-    float shot_speed = 100; // ps / s
     void update(sf::Time time);
     bool isSimulationRunning();
-
+    ShotState ss;
 };
 
 #endif
