@@ -28,7 +28,6 @@ file(GLOB_RECURSE SRC_TAPPA01 CONFIGURE_DEPENDS Tappa01/*.cpp)
 add_executable(Tappa01 ${SRC_TAPPA01})
 target_link_libraries(Tappa01 PRIVATE SFML::Graphics common)
 
-
 file(GLOB_RECURSE SRC_TAPPA02 CONFIGURE_DEPENDS Tappa02/*.cpp)
 add_executable(Tappa02 ${SRC_TAPPA02})
 target_link_libraries(Tappa02 PRIVATE SFML::Graphics common)
@@ -53,3 +52,10 @@ file(GLOB_RECURSE SRC_TAPPA07 CONFIGURE_DEPENDS Tappa07/*.cpp)
 add_executable(Tappa07 ${SRC_TAPPA07})
 target_link_libraries(Tappa07 PRIVATE SFML::Graphics common)
 
+file(GLOB_RECURSE SRC_TAPPA08 CONFIGURE_DEPENDS Tappa08/*.cpp)
+add_executable(Tappa08 ${SRC_TAPPA08})
+target_link_libraries(Tappa08 PRIVATE SFML::Graphics common)
+
+file(GLOB_RECURSE SRC_TAPPA09 CONFIGURE_DEPENDS Tappa09/*.cpp)
+add_executable(Tappa09 ${SRC_TAPPA09})
+target_link_libraries(Tappa09 PRIVATE SFML::Graphics common)
