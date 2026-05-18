@@ -15,28 +15,21 @@ GameState::GameState(sf::RenderWindow& window)
             MIN_TABLE_MARGIN.y + panel.getHeight()
         })
 {
-    applyConfig();
+    apply_config();
     // Testing
+    /*
     for(unsigned i = BallIDRange::SMOOTH_START; i <= BallIDRange::SMOOTH_STOP ;++i){
         table.put_in_pocket(i);
     }
     for(unsigned i = BallIDRange::STRIPED_START; i <= BallIDRange::STRIPED_STOP ;++i){
         table.put_in_pocket(i);
-    }
+    }*/
 
 }
 
-std::string Player::to_string()
-{
-    std::string res = "[" + this->name + "] " + std::to_string(remaining) + " Remaining | " + std::to_string(this->mistakes) + " Mistakes";
-    res.append((this->smooth) ? " | Smooth" : " | Striped");
-    return res;
-}
 
-
-void GameState::applyConfig()
+void GameState::apply_config()
 {
-    table.cue.type = config.cuetype;
     ss.shot_speed = 100;
     panel.setShotSpeed((int)ss.shot_speed);
     panel.setGameMode(&config);
@@ -52,6 +45,7 @@ void GameState::applyConfig()
     other = &bob;
     panel.setCurrent(current);
     panel.setOther(other);
+    table.apply_config(&config);
 }
 
 
@@ -94,12 +88,13 @@ void GameState::resize(sf::Vector2u size){
 
 void GameState::set_shot_speed_delta(float delta)
 {
+    if(game_ended) return;
     float min_step = (delta > 0) ? 5 : -5;
     ss.shot_speed += (delta + min_step);
-    if(ss.shot_speed < 0){
-        ss.shot_speed = 5;
-    }else if(ss.shot_speed > 600){
-        ss.shot_speed = 600;
+    if(ss.shot_speed < config.MIN_SHOT_SPEED){
+        ss.shot_speed = config.MIN_SHOT_SPEED;
+    }else if(ss.shot_speed > config.MAX_SHOT_SPEED){
+        ss.shot_speed = config.MAX_SHOT_SPEED;
     }
     panel.setShotSpeed(((int)ss.shot_speed));
 }
@@ -121,7 +116,7 @@ void GameState::update(sf::Time current_t)
     // Valutazione dello stato della simulazione
     simulation = false;
     for(Ball* b : table.getBallsOnTable()){
-        if(norm(b->getSpeed()) > 0.00005f){
+        if(norm(b->get_speed()) > 0.00005f){
             simulation = true;
         }
     }

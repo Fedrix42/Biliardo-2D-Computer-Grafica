@@ -53,6 +53,22 @@ Table::Table(sf::Vector2f table_size, sf::Vector2f offset)
     cue.anchor = (&balls.find(BallIDRange::WHITE)->second.ball);
 }
 
+void Table::apply_config(GameConfig* config)
+{
+    cue.type = config->cuetype;
+    cue.shaking_hands = config->shaking_hands_mode;
+    cue.max_shakings_hands_speed = config->max_shakings_hands_speed;
+    reset();
+    if(config->weird_masses_mode){
+        for(auto& entry : balls){
+            float distortion = (rand() % config->max_mass_distorsions_grams);
+            distortion /= 1000; // Converto da grammi a kg
+            entry.second.ball.set_mass(Ball::DEFAULT_MASS + distortion);
+        }
+    }
+}
+
+
 void Table::reset()
 {
     sf::Vector2f triangle_center = shape.getPosition() + sf::Vector2f{
@@ -62,7 +78,7 @@ void Table::reset()
     auto it = balls.begin();
     for (int j = 0; j < 5; ++j) {
         for (int i = 0; i <= j; ++i) {
-            if(it->second.ball.getID() == BallIDRange::WHITE){
+            if(it->second.ball.get_id() == BallIDRange::WHITE){
                 reset_white();
                 ++it;
             }
@@ -72,9 +88,9 @@ void Table::reset()
             float y = static_cast<float>(j);
             sf::Vector2f pos = {x, y};
             pos = counterclkwise_rot(pos);
-            pos *= (2 * it->second.ball.getRadius() + 30);
+            pos *= (2 * it->second.ball.get_radius() + 30);
             pos += triangle_center;
-            it->second.ball.setPosition(pos);
+            it->second.ball.set_position(pos);
             ++it;
         }
     }
@@ -85,12 +101,12 @@ void Table::reset_white()
     balls.at(BallIDRange::WHITE).pocket = nullptr;
     balls.at(BallIDRange::WHITE).counted = false;
     auto& white = balls.at(BallIDRange::WHITE).ball;
-    white.setPosition(shape.getPosition() + sf::Vector2f{
+    white.set_position(shape.getPosition() + sf::Vector2f{
             shape.getSize().x / 3.0f,
             shape.getSize().y / 2.0f
         }
     );
-    white.setSpeed({0, 0});
+    white.set_speed({0, 0});
 }
 
 
@@ -141,7 +157,7 @@ void Table::update(sf::Time time){
         if(entry.second.pocket == nullptr){
             for(Pocket p : pockets){
                 // Controllo se la pallina entra in una buca, non aggiorno la posizione delle palline in buca
-                if(dist(p.getPosition(), entry.second.ball.getPosition()) <= p.getRadius()){
+                if(dist(p.getPosition(), entry.second.ball.get_position()) <= p.getRadius()){
                     entry.second.pocket = &p;
                 } else {
                     entry.second.ball.update(time);

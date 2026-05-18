@@ -33,7 +33,7 @@ bool GameLogic::round(ShotState* ss, Table* table, Player* current, Player* othe
         Verifica dei falli
         Controllo che non ha colpito più una 1 pallina oppure ha colpito 1 pallina che non è la bianca
     */
-    if(hitted_size > 1 || ss->hitted_by.at(0)->getID() != BallIDRange::WHITE){
+    if(hitted_size > 1 || ss->hitted_by.at(0)->get_id() != BallIDRange::WHITE){
         if(increase_mistakes(current, panel, config)) return true;
     }
     ss->hitted_by = std::vector<Ball*>();
@@ -48,9 +48,9 @@ bool GameLogic::round(ShotState* ss, Table* table, Player* current, Player* othe
     unsigned striped_in_pockets = 0;
 
     for(Ball* putted : now_putted_in_pockets){
-        if(putted->getID() == BallIDRange::BLACK){
+        if(putted->get_id() == BallIDRange::BLACK){
             black_in_pocket = true;
-        } else if(putted->getID() == BallIDRange::WHITE){
+        } else if(putted->get_id() == BallIDRange::WHITE){
             white_in_pocket = true;
         } else if(putted->is_smooth()){
             smooth_in_pockets++;

@@ -21,28 +21,30 @@ public:
     Ball() = default;
     void draw(sf::RenderWindow& window);
     void update(sf::Time current_t);
-    float getRadius();
+    float get_radius();
     void resize(sf::Vector2f factors, float new_pocket_radius, sf::Vector2f new_offset, sf::Vector2f old_offset);
-    float getMass() const;
-    sf::Vector2f getPosition() const;
-    sf::Vector2f getSpeed() const;
-    void setPosition(sf::Vector2f pos);
-    void setSpeed(sf::Vector2f speed);
+    float get_mass() const;
+    void set_mass(float mass);
+    sf::Vector2f get_position() const;
+    sf::Vector2f get_speed() const;
+    void set_position(sf::Vector2f pos);
+    void set_speed(sf::Vector2f speed);
     std::string to_string() const;
-    float getDecelleration() const;
-    std::vector<sf::Vector2f> getHitbox() const;
-    sf::FloatRect getBoundBox() const;
+    float get_decelleration() const;
+    std::vector<sf::Vector2f> get_hitbox() const;
+    sf::FloatRect get_bound_box() const;
     std::unordered_map<Ball*, Collision> balls_collisions;
     std::unordered_map<TableWall*, Collision> walls_collisions;
-    unsigned getID();
+    unsigned get_id();
     bool is_smooth();
     bool is_striped();
+    constexpr static const float DEFAULT_MASS = 0.2f;// 0.200 kg
 private:
     sf::Vector2f speed; // px/s
     unsigned id;
     sf::CircleShape shape;
-    float mass = 0.200; // 0.200 kg
-    float frictionDeceleration; // Coefficiente di attrito
+    float mass = DEFAULT_MASS;
+    float friction_deceleration; // Coefficiente di attrito
     sf::Time last = sf::Time::Zero;
 };
 

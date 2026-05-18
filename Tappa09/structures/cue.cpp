@@ -30,16 +30,16 @@ void Cue::update(const sf::Event::MouseMoved* moved){
             tip.setPosition(body.getTransform().transformPoint(local_tip));
             break;
         case CueType::ANCHOR:
-            sf::Vector2f anchorpos = anchor->getPosition();
+            sf::Vector2f anchorpos = anchor->get_position();
             sf::Vector2f fromto = anchorpos - mouse;
             float n = norm(fromto);
-            if(n < anchor->getRadius()){ // Il cursore è dentro la pallina
+            if(n < anchor->get_radius()){ // Il cursore è dentro la pallina
                 return;
             }
             direction = fromto / n;
             sf::Vector2f opp_direction = opposite(direction);
 
-            tip.setPosition(opp_direction * anchor->getRadius() + opp_direction * (tip.getRadius() * 0.8f));
+            tip.setPosition(opp_direction * anchor->get_radius() + opp_direction * (tip.getRadius() * 0.8f));
             // ^ Moltiplico per 0.8f per avere una conpenetrazione tra la tip e l'anchor
             tip.setPosition(tip.getPosition() + anchorpos);
 
@@ -74,6 +74,16 @@ std::optional<Ball> Cue::advance(sf::Time current_t)
         }
         sf::Time delta = current_t - last;
         auto travel = direction * (animation_backward_speed * delta.asSeconds());
+        if(shaking_hands){
+            sf::Vector2f shaking_velocity =  sf::Vector2f{
+                static_cast<float>(rand() % max_shakings_hands_speed),
+                static_cast<float>(rand() % max_shakings_hands_speed)
+            };
+            // Randomizzo anche il segno
+            shaking_velocity.x = (rand() % 2 == 0) ? shaking_velocity.x : -shaking_velocity.x;
+            shaking_velocity.y = (rand() % 2 == 0) ? shaking_velocity.y : -shaking_velocity.y;
+            travel += shaking_velocity * delta.asSeconds();
+        }
         if(current_t - shot_start_animation >= sf::seconds(0.3f)){
             if(backward){ // Ora devo andare avanti
                 backward = false;
@@ -81,7 +91,7 @@ std::optional<Ball> Cue::advance(sf::Time current_t)
             } else {
                 // Animazione terminata
                 Ball materialized = Ball(99, tip.getRadius(), 1, tip.getPosition());
-                materialized.setSpeed(direction * speed); // La vera velocità del colpo (Non quella animazione)
+                materialized.set_speed(direction * speed); // La vera velocità del colpo (Non quella animazione)
                 shooting = false;
                 backward = true;
                 shot_start_animation = sf::Time::Zero;

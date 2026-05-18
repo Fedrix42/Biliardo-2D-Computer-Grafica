@@ -19,7 +19,7 @@ Ball::Ball(unsigned int id, float pocket_radius, float tableFrictionCoeff, sf::V
     if(id >= BallIDRange::TOTAL_START && id <= BallIDRange::TOTAL_STOP ){ // ID negativo rappresenta pallina virtuali (Come la punta della stecca)
         shape.setTexture(AssetMGR::instance().get_ball_texture(id));
     }
-    frictionDeceleration = tableFrictionCoeff; // Ipotizzo il coefficiente di attrito sia uguale per tutte le palline e sia quello del tavolo
+    friction_deceleration = tableFrictionCoeff; // Ipotizzo il coefficiente di attrito sia uguale per tutte le palline e sia quello del tavolo
 }
 
 void Ball::resize(sf::Vector2f factors, float new_pocket_radius, sf::Vector2f new_offset, sf::Vector2f old_offset)
@@ -36,7 +36,7 @@ void Ball::resize(sf::Vector2f factors, float new_pocket_radius, sf::Vector2f ne
 }
 
 
-float Ball::getRadius()
+float Ball::get_radius()
 {
     return shape.getRadius();
 }
@@ -54,10 +54,10 @@ void Ball::update(sf::Time current_t){
 
     sf::Time delta = current_t - last;
     // Decellerazione
-    speed = speedAfterTime(speed, frictionDeceleration, delta);
+    speed = speedAfterTime(speed, friction_deceleration, delta);
 
 
-    sf::Vector2f my_pos = getPosition();
+    sf::Vector2f my_pos = get_position();
     sf::Vector2f next_pos = my_pos;
 
     // Collisioni con muri
@@ -95,7 +95,7 @@ void Ball::update(sf::Time current_t){
             float against_start_velocity_alongn = c.collider_velocity_along_normal;
 
             // Calcolo la componente finale lungo la linea di impatto
-            float my_final_velocity_alongn = fnspeedA_1D(getMass(), collider_ball->getMass(), my_start_velocity_alongn, against_start_velocity_alongn);
+            float my_final_velocity_alongn = fnspeedA_1D(get_mass(), collider_ball->get_mass(), my_start_velocity_alongn, against_start_velocity_alongn);
             float my_delta_velocity_alongn = fabsf(my_final_velocity_alongn - my_start_velocity_alongn);
             my_delta_velocity_alongn = (my_delta_velocity_alongn < 0.0001f) ? 0.0f : my_delta_velocity_alongn;
             /* std::cout << to_string()
@@ -125,9 +125,9 @@ void Ball::update(sf::Time current_t){
 
 }
 
-float Ball::getDecelleration() const
+float Ball::get_decelleration() const
 {
-    return frictionDeceleration;
+    return friction_deceleration;
 }
 
 
@@ -136,17 +136,17 @@ void Ball::draw(sf::RenderWindow& window)
     window.draw(shape);
 }
 
-float Ball::getMass() const
+float Ball::get_mass() const
 {
     return mass;
 }
 
-std::vector<sf::Vector2f> Ball::getHitbox() const {
+std::vector<sf::Vector2f> Ball::get_hitbox() const {
     const int sides = 8;
     std::vector<sf::Vector2f> res;
     float angle = 2.0f * PI / static_cast<float>(sides);
     sf::Vector2f radius_vec = {0, -shape.getRadius()};
-    sf::Vector2f position = getPosition();
+    sf::Vector2f position = get_position();
 
     for (int i = 0; i < sides; i++) {
         res.push_back(radius_vec + position);
@@ -156,42 +156,47 @@ std::vector<sf::Vector2f> Ball::getHitbox() const {
     return res;
 }
 
-sf::FloatRect Ball::getBoundBox() const
+sf::FloatRect Ball::get_bound_box() const
 {
-    sf::Vector2f pos = getPosition();
+    sf::Vector2f pos = get_position();
     float r = shape.getRadius();
     r = r * 1.5f; // Aumento il raggio per fare una bounding box più grande ed identificare meglio gli urti a grandi velocità
     return sf::FloatRect({pos.x - r, pos.y - r}, {2*r, 2*r});
 }
 
 
-sf::Vector2f Ball::getPosition() const {
+sf::Vector2f Ball::get_position() const {
     return shape.getPosition();
 }
 
-sf::Vector2f Ball::getSpeed() const
+sf::Vector2f Ball::get_speed() const
 {
     return speed;
 }
 
-void Ball::setPosition(sf::Vector2f pos){
+void Ball::set_position(sf::Vector2f pos){
     shape.setPosition(pos);
 }
 
-void Ball::setSpeed(sf::Vector2f speed){
+void Ball::set_speed(sf::Vector2f speed){
     this->speed = speed;
 }
 
 std::string Ball::to_string() const {
     return ("Ball["  + std::to_string(id) + " -- "
-                     + point_to_str(getBoundBox().position)
-                     + point_to_str(getBoundBox().size)
+                     + point_to_str(get_bound_box().position)
+                     + point_to_str(get_bound_box().size)
     + "]");
 }
 
-unsigned int Ball::getID()
+unsigned int Ball::get_id()
 {
     return id;
+}
+
+void Ball::set_mass(float mass)
+{
+    this->mass = mass;
 }
 
 

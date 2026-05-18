@@ -22,6 +22,8 @@ public:
     Ball* anchor;
     CueType type = CueType::ANCHOR;
     bool enabled = true; // Disabilita o abilita l'aggiornamento della stecca e la visualizzazione
+    bool shaking_hands = true; // Modalità a difficolta aumentata che simula le mani tremolanti
+    int max_shakings_hands_speed = 100;
 private:
     const float CUE_WIDTH = 8.0f;
     const float BODY_HEIGHT = 500.0f;
@@ -29,6 +31,7 @@ private:
     const sf::Vector2f local_tip = {CUE_WIDTH / 2.0f, 0.0f};
     const float ROTATION_ANGLE_DEGREE = 2;
     float mass = 0.5; // 0.5 kg
+
     sf::RectangleShape body;
     sf::CircleShape tip;
     bool shooting = false;

@@ -23,7 +23,7 @@ private:
     Player* current;
     Player* other;
     bool game_ended = false;
-    void applyConfig();
+    void apply_config();
 public:
     GameState(sf::RenderWindow& window);
     void draw(sf::RenderWindow& window);

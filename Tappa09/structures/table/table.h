@@ -8,6 +8,7 @@
 #include "tablewall.h"
 #include "unordered_map"
 #include "../../collisions/collisions.h"
+#include "../../state/config.h"
 
 // Usato per tenere traccia dello stato delle palline dentro la mappa in Table()
 struct BallStatus {
@@ -22,6 +23,7 @@ public:
     Table(sf::Vector2f table_size, sf::Vector2f offset);
     void draw(sf::RenderWindow& window);
     void resize(sf::Vector2f table_size, sf::Vector2f offset);
+    void apply_config(GameConfig* config);
     Cue cue;
     void update(sf::Time time);
     const float REAL_TABLE_WIDTH = 2.84; // metri

@@ -6,11 +6,11 @@
 #include "hitbox_walker.h"
 
 bool Collisions::doesBoundBoxesCollide(Ball* self, Ball* collider){
-    return self->getBoundBox().findIntersection(collider->getBoundBox()) != std::nullopt;
+    return self->get_bound_box().findIntersection(collider->get_bound_box()) != std::nullopt;
 }
 
 bool Collisions::doesBoundBoxesCollide(Ball* self, TableWall* wall){
-    return self->getBoundBox().findIntersection(wall->getBoundBox()) != std::nullopt;
+    return self->get_bound_box().findIntersection(wall->getBoundBox()) != std::nullopt;
 }
 
 std::vector<Ball*>  Collisions::compute_collisions(sf::Time current_t, Ball* cue_tip, std::vector<Ball*> balls, std::vector<TableWall*> walls){
@@ -62,10 +62,10 @@ std::vector<Ball*>  Collisions::compute_collisions(sf::Time current_t, Ball* cue
 
 
 std::optional<Collision> Collisions::computeCollision(Ball* self, TableWall* wall, sf::Time current_t){
-    sf::Vector2f self_old_pos = self->getPosition();
-    float self_speed_module = norm(self->getSpeed());
-    sf::Vector2f my_normalized_speed = (self_speed_module != 0) ? (self->getSpeed() / self_speed_module) : (sf::Vector2f{0, 0});
-    float self_deceleration = self->getDecelleration();
+    sf::Vector2f self_old_pos = self->get_position();
+    float self_speed_module = norm(self->get_speed());
+    sf::Vector2f my_normalized_speed = (self_speed_module != 0) ? (self->get_speed() / self_speed_module) : (sf::Vector2f{0, 0});
+    float self_deceleration = self->get_decelleration();
 
     HitboxWalker walker;
     sf::Time simulation_t = sf::Time::Zero;
@@ -73,23 +73,23 @@ std::optional<Collision> Collisions::computeCollision(Ball* self, TableWall* wal
     sf::Time stop = sf::seconds(0.1); // Simulo 100 ms
 
     while(simulation_t < stop){
-        walker = HitboxWalker::getHitboxIterator(self->getHitbox(), wall->getHitbox());
+        walker = HitboxWalker::getHitboxIterator(self->get_hitbox(), wall->getHitbox());
         // Controllo le hitbox correnti
         while(walker.hasNext()){
             auto self_seg = walker.self_segment();
             auto wall_seg = walker.collider_segment();
             auto collision_point = segment_intersection(self_seg.first, self_seg.second, wall_seg.first, wall_seg.second);
             if(collision_point){
-                sf::Vector2f from_wall_to_ball = self->getPosition() - (*collision_point);
+                sf::Vector2f from_wall_to_ball = self->get_position() - (*collision_point);
                 sf::Vector2f wall_normal = clkwise_rot(wall_seg.first - wall_seg.second) / norm(wall_seg.first - wall_seg.second);
                 if(dot(from_wall_to_ball, wall_normal) < 0.0f){
                     wall_normal = opposite(wall_normal);
                 }
-                self->setPosition(self_old_pos); // Rollback
+                self->set_position(self_old_pos); // Rollback
                 return Collision {
                     current_t + simulation_t,
                     wall_normal, // Mia normale
-                    dot(wall_normal, speedAfterTime(self->getSpeed(), self_deceleration, simulation_t)),
+                    dot(wall_normal, speedAfterTime(self->get_speed(), self_deceleration, simulation_t)),
                     0.0f // Il muro è fermo
                 };
 
@@ -102,27 +102,27 @@ std::optional<Collision> Collisions::computeCollision(Ball* self, TableWall* wal
         if(self_traveled < 0.000001f){
             break;
         }
-        self->setPosition(self_old_pos + (self_traveled * my_normalized_speed));
+        self->set_position(self_old_pos + (self_traveled * my_normalized_speed));
     }
     // Rollback
-    self->setPosition(self_old_pos);
+    self->set_position(self_old_pos);
     return std::nullopt;
 }
 
 
 
 std::optional<std::pair<Collision, Collision>> Collisions::computeCollision(Ball* self, Ball* collider, sf::Time current_t){
-    sf::Vector2f self_old_pos = self->getPosition();
-    sf::Vector2f collider_old_pos = collider->getPosition();
+    sf::Vector2f self_old_pos = self->get_position();
+    sf::Vector2f collider_old_pos = collider->get_position();
 
-    float self_speed_module = norm(self->getSpeed());
-    float collider_speed_module = norm(collider->getSpeed());
+    float self_speed_module = norm(self->get_speed());
+    float collider_speed_module = norm(collider->get_speed());
 
-    sf::Vector2f my_normalized_speed = (self_speed_module != 0) ? (self->getSpeed() / self_speed_module) : (sf::Vector2f{0, 0});
-    sf::Vector2f collider_normalized_speed = (collider_speed_module != 0) ? (collider->getSpeed() / collider_speed_module) : (sf::Vector2f{0, 0});
+    sf::Vector2f my_normalized_speed = (self_speed_module != 0) ? (self->get_speed() / self_speed_module) : (sf::Vector2f{0, 0});
+    sf::Vector2f collider_normalized_speed = (collider_speed_module != 0) ? (collider->get_speed() / collider_speed_module) : (sf::Vector2f{0, 0});
 
-    float self_deceleration = self->getDecelleration();
-    float collider_deceleration = collider->getDecelleration();
+    float self_deceleration = self->get_decelleration();
+    float collider_deceleration = collider->get_decelleration();
 
 
     sf::Time simulation_t = sf::Time::Zero;
@@ -130,14 +130,14 @@ std::optional<std::pair<Collision, Collision>> Collisions::computeCollision(Ball
     sf::Time stop = sf::seconds(0.1); // Simulo 100 ms
 
     while(simulation_t < stop){
-        if(dist(self->getPosition(), collider->getPosition()) <= (self->getRadius() + collider->getRadius())){ // C'è una collisione
+        if(dist(self->get_position(), collider->get_position()) <= (self->get_radius() + collider->get_radius())){ // C'è una collisione
             std::pair<Collision, Collision> result;
 
-            sf::Vector2f self_normal = self->getPosition() - collider->getPosition();
+            sf::Vector2f self_normal = self->get_position() - collider->get_position();
             self_normal /= norm(self_normal);
 
             sf::Vector2f collider_normal = opposite(self_normal);
-            sf::Vector2f relative_speed = self->getSpeed() - collider->getSpeed();
+            sf::Vector2f relative_speed = self->get_speed() - collider->get_speed();
 
             /*
             std::cout << "Collisione: \n\tNormale self: " << point_to_str(self_normal)
@@ -147,21 +147,21 @@ std::optional<std::pair<Collision, Collision>> Collisions::computeCollision(Ball
             */
 
             // Rollback delle posizioni originale
-            self->setPosition(self_old_pos);
-            collider->setPosition(collider_old_pos);
+            self->set_position(self_old_pos);
+            collider->set_position(collider_old_pos);
 
             if(dot(relative_speed, self_normal) < 0.0f){ // Si stanno avvicinando
                 result.first = Collision {
                         current_t + simulation_t,
                         self_normal,
-                        dot(self_normal, speedAfterTime(self->getSpeed(), self_deceleration, simulation_t)),
-                        dot(collider_normal, speedAfterTime(collider->getSpeed(), collider_deceleration, simulation_t))
+                        dot(self_normal, speedAfterTime(self->get_speed(), self_deceleration, simulation_t)),
+                        dot(collider_normal, speedAfterTime(collider->get_speed(), collider_deceleration, simulation_t))
                 };
                 result.second = Collision {
                         current_t + simulation_t,
                         collider_normal,
-                        dot(collider_normal, speedAfterTime(collider->getSpeed(), collider_deceleration, simulation_t)),
-                        dot(self_normal, speedAfterTime(self->getSpeed(), self_deceleration, simulation_t))
+                        dot(collider_normal, speedAfterTime(collider->get_speed(), collider_deceleration, simulation_t)),
+                        dot(self_normal, speedAfterTime(self->get_speed(), self_deceleration, simulation_t))
                 };
                 return result;
             } else {
@@ -177,11 +177,11 @@ std::optional<std::pair<Collision, Collision>> Collisions::computeCollision(Ball
         if(self_traveled < 0.000001f && collider_traveled < 0.000001f){
             break;
         }
-        self->setPosition(self_old_pos + (self_traveled * my_normalized_speed));
-        collider->setPosition(collider_old_pos + (collider_traveled * collider_normalized_speed));
+        self->set_position(self_old_pos + (self_traveled * my_normalized_speed));
+        collider->set_position(collider_old_pos + (collider_traveled * collider_normalized_speed));
     }
     // Rollback
-    self->setPosition(self_old_pos);
-    collider->setPosition(collider_old_pos);
+    self->set_position(self_old_pos);
+    collider->set_position(collider_old_pos);
     return std::nullopt;
 }
