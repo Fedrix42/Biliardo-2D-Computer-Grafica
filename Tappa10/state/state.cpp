@@ -30,7 +30,8 @@ GameState::GameState(sf::RenderWindow& window)
 
 void GameState::apply_config()
 {
-    ss.shot_speed = 100;
+    std::cout << "GameState applying config: " << config.to_string() << std::endl;
+    ss.shot_speed = ss.DEFAULT_SHOT_SPEED;
     panel.setShotSpeed((int)ss.shot_speed);
     panel.setGameMode(&config);
 
@@ -51,7 +52,6 @@ void GameState::apply_config()
 
 void GameState::shot(sf::Time current_t){
     if(game_ended) return;
-    ss.shot_time = current_t;
     table.cue.shot(ss.shot_speed);
 }
 
@@ -108,15 +108,15 @@ void GameState::update(sf::Time current_t)
     std::optional<Ball> shot_result = table.cue.advance(current_t);
     if(shot_result){
         ss.tip_copy = (*shot_result);
-        ss.hitted_by = Collisions::compute_collisions(current_t, &ss.tip_copy, table.getBallsOnTable(), table.getWalls());
+        ss.hitted_by = Collisions::compute_all_collisions(current_t, &ss.tip_copy, table.get_balls_on_table(), table.get_walls());
     } else {
-        Collisions::compute_collisions(current_t, nullptr, table.getBallsOnTable(), table.getWalls());
+        Collisions::compute_all_collisions(current_t, nullptr, table.get_balls_on_table(), table.get_walls());
     }
 
     // Valutazione dello stato della simulazione
     simulation = false;
-    for(Ball* b : table.getBallsOnTable()){
-        if(norm(b->get_speed()) > 0.00005f){
+    for(Ball* b : table.get_balls_on_table()){
+        if(utils::vectors_screen_space::norm(b->get_speed()) > 0.00005f){
             simulation = true;
         }
     }
@@ -135,7 +135,7 @@ void GameState::update(sf::Time current_t)
         }
     }
 
-    table.cue.enabled = !simulation || table.cue.isShooting();
+    table.cue.enabled = !simulation || table.cue.is_shooting();
     last_simulation = simulation;
 }
 

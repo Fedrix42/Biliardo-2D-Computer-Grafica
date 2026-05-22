@@ -14,12 +14,12 @@ class Ball;
 class TableWall;
 
 namespace Collisions {
-    bool doesBoundBoxesCollide(Ball* self, Ball* collider);
-    bool doesBoundBoxesCollide(Ball* self, TableWall* wall);
-    std::optional<std::pair<Collision, Collision>> computeCollision(Ball* self, Ball* collider, sf::Time current_t);
-    std::optional<Collision> computeCollision(Ball* self, TableWall* wall, sf::Time current_t);
+    bool does_bound_boxes_collides(Ball* self, Ball* collider);
+    bool does_bound_boxes_collides(Ball* self, TableWall* wall);
+    std::optional<std::pair<Collision, Collision>> collision(Ball* self, Ball* collider, sf::Time current_t);
+    std::optional<Collision> collision(Ball* self, TableWall* wall, sf::Time current_t);
     /* Restituisce il vettore delle palline colpite dalla stecca (Nel caso di un colpo di stecca) */
-    std::vector<Ball*>  compute_collisions(sf::Time current_t, Ball* cue_tip, std::vector<Ball*> balls, std::vector<TableWall*> walls);
+    std::vector<Ball*>  compute_all_collisions(sf::Time current_t, Ball* cue_tip, std::vector<Ball*> balls, std::vector<TableWall*> walls);
 }
 
 

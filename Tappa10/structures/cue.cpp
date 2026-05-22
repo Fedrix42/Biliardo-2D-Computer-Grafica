@@ -16,7 +16,7 @@ Cue::Cue(sf::Vector2f position)
     body.setPosition(position); // Offset è la posizione del tavolo
     tip.setRadius(body.getSize().x / 2.0f);
     tip.setOrigin({tip.getRadius(), tip.getRadius()});
-    tip.setPosition(body.getTransform().transformPoint(local_tip));
+    tip.setPosition(body.getTransform().transformPoint(LOCAL_TIP));
     body.setTexture(AssetMGR::instance().cue_texture());
     direction = {0, -1};
 }
@@ -27,17 +27,17 @@ void Cue::update(const sf::Event::MouseMoved* moved){
     switch(type){
         case CueType::FREE:
             body.setPosition(mouse);
-            tip.setPosition(body.getTransform().transformPoint(local_tip));
+            tip.setPosition(body.getTransform().transformPoint(LOCAL_TIP));
             break;
         case CueType::ANCHOR:
             sf::Vector2f anchorpos = anchor->get_position();
             sf::Vector2f fromto = anchorpos - mouse;
-            float n = norm(fromto);
+            float n = utils::vectors_screen_space::norm(fromto);
             if(n < anchor->get_radius()){ // Il cursore è dentro la pallina
                 return;
             }
             direction = fromto / n;
-            sf::Vector2f opp_direction = opposite(direction);
+            sf::Vector2f opp_direction = utils::vectors_screen_space::opposite(direction);
 
             tip.setPosition(opp_direction * anchor->get_radius() + opp_direction * (tip.getRadius() * 0.8f));
             // ^ Moltiplico per 0.8f per avere una conpenetrazione tra la tip e l'anchor
@@ -99,7 +99,7 @@ std::optional<Ball> Cue::advance(sf::Time current_t)
             }
         }
         if(backward){
-            travel = opposite(travel);
+            travel = utils::vectors_screen_space::opposite(travel);
         }
         body.setPosition(body.getPosition() + travel);
         tip.setPosition(tip.getPosition() + travel);
@@ -114,8 +114,8 @@ void Cue::rotate(bool clockwise)
     if(enabled && type == CueType::FREE){
         sf::Angle angle = (clockwise) ? sf::degrees(ROTATION_ANGLE_DEGREE) : sf::degrees(-ROTATION_ANGLE_DEGREE);
         body.rotate(angle); // sin cos scambiati perchè il rettangolo è in verticale
-        tip.setPosition(body.getTransform().transformPoint(local_tip));
-        direction = (tip.getPosition() - body.getPosition()) / norm((tip.getPosition() - body.getPosition()));
+        tip.setPosition(body.getTransform().transformPoint(LOCAL_TIP));
+        direction = (tip.getPosition() - body.getPosition()) / utils::vectors_screen_space::norm((tip.getPosition() - body.getPosition()));
     }
 }
 
@@ -128,7 +128,7 @@ void Cue::draw(sf::RenderWindow& window)
     }
 }
 
-bool Cue::isShooting()
+bool Cue::is_shooting()
 {
     return shooting;
 }

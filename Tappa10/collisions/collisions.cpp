@@ -5,15 +5,20 @@
 #include "../structures/table/tablewall.h"
 #include "hitbox_walker.h"
 
-bool Collisions::doesBoundBoxesCollide(Ball* self, Ball* collider){
+using namespace utils::physics;
+using namespace utils::monocollisions;
+using namespace utils::vectors_screen_space;
+using namespace utils::geometry;
+
+bool Collisions::does_bound_boxes_collides(Ball* self, Ball* collider){
     return self->get_bound_box().findIntersection(collider->get_bound_box()) != std::nullopt;
 }
 
-bool Collisions::doesBoundBoxesCollide(Ball* self, TableWall* wall){
-    return self->get_bound_box().findIntersection(wall->getBoundBox()) != std::nullopt;
+bool Collisions::does_bound_boxes_collides(Ball* self, TableWall* wall){
+    return self->get_bound_box().findIntersection(wall->get_bound_box()) != std::nullopt;
 }
 
-std::vector<Ball*>  Collisions::compute_collisions(sf::Time current_t, Ball* cue_tip, std::vector<Ball*> balls, std::vector<TableWall*> walls){
+std::vector<Ball*>  Collisions::compute_all_collisions(sf::Time current_t, Ball* cue_tip, std::vector<Ball*> balls, std::vector<TableWall*> walls){
     // Collisioni stecca - palline
     std::vector<Ball*> cue_hitted_balls;
     if(cue_tip != nullptr){
@@ -24,9 +29,9 @@ std::vector<Ball*>  Collisions::compute_collisions(sf::Time current_t, Ball* cue
     for(Ball* b : balls){
         for(TableWall* w : walls){
             //std::cout << std::boolalpha << doesBoundBoxesCollide(b, w) << std::endl;
-            if(doesBoundBoxesCollide(b, w) && b->walls_collisions.find(w) == b->walls_collisions.end()){
+            if(does_bound_boxes_collides(b, w) && b->walls_collisions.find(w) == b->walls_collisions.end()){
                 // std::cout << b->to_string() << std::endl;
-                auto res = computeCollision(b, w, current_t);
+                auto res = collision(b, w, current_t);
                 if(res){
                     b->walls_collisions[w] = (*res);
                 }
@@ -40,11 +45,11 @@ std::vector<Ball*>  Collisions::compute_collisions(sf::Time current_t, Ball* cue
             Ball* collider = balls.at(j);
             auto self_collisions = self->balls_collisions;
             auto collider_collisions = collider->balls_collisions;
-            if(doesBoundBoxesCollide(self, collider)
+            if(does_bound_boxes_collides(self, collider)
                 && self_collisions.find(collider) == self_collisions.end()
                 && collider_collisions.find(self) == collider_collisions.end()){
                     //std::cout << self->to_string() << " con " << collider->to_string() << std::endl;
-                    auto res = computeCollision(self, collider, current_t);
+                    auto res = collision(self, collider, current_t);
                     if(res){
                         self->balls_collisions[collider] = (*res).first;
                         collider->balls_collisions[self] = (*res).second;
@@ -61,7 +66,7 @@ std::vector<Ball*>  Collisions::compute_collisions(sf::Time current_t, Ball* cue
 }
 
 
-std::optional<Collision> Collisions::computeCollision(Ball* self, TableWall* wall, sf::Time current_t){
+std::optional<Collision> Collisions::collision(Ball* self, TableWall* wall, sf::Time current_t){
     sf::Vector2f self_old_pos = self->get_position();
     float self_speed_module = norm(self->get_speed());
     sf::Vector2f my_normalized_speed = (self_speed_module != 0) ? (self->get_speed() / self_speed_module) : (sf::Vector2f{0, 0});
@@ -73,7 +78,7 @@ std::optional<Collision> Collisions::computeCollision(Ball* self, TableWall* wal
     sf::Time stop = sf::seconds(0.1); // Simulo 100 ms
 
     while(simulation_t < stop){
-        walker = HitboxWalker::getHitboxIterator(self->get_hitbox(), wall->getHitbox());
+        walker = HitboxWalker::getHitboxIterator(self->get_hitbox(), wall->get_hitbox());
         // Controllo le hitbox correnti
         while(walker.hasNext()){
             auto self_seg = walker.self_segment();
@@ -111,7 +116,7 @@ std::optional<Collision> Collisions::computeCollision(Ball* self, TableWall* wal
 
 
 
-std::optional<std::pair<Collision, Collision>> Collisions::computeCollision(Ball* self, Ball* collider, sf::Time current_t){
+std::optional<std::pair<Collision, Collision>> Collisions::collision(Ball* self, Ball* collider, sf::Time current_t){
     sf::Vector2f self_old_pos = self->get_position();
     sf::Vector2f collider_old_pos = collider->get_position();
 
@@ -130,7 +135,7 @@ std::optional<std::pair<Collision, Collision>> Collisions::computeCollision(Ball
     sf::Time stop = sf::seconds(0.1); // Simulo 100 ms
 
     while(simulation_t < stop){
-        if(dist(self->get_position(), collider->get_position()) <= (self->get_radius() + collider->get_radius())){ // C'è una collisione
+        if(distance(self->get_position(), collider->get_position()) <= (self->get_radius() + collider->get_radius())){ // C'è una collisione
             std::pair<Collision, Collision> result;
 
             sf::Vector2f self_normal = self->get_position() - collider->get_position();

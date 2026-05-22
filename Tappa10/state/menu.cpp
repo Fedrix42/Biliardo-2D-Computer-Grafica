@@ -143,10 +143,6 @@ void Menu::draw(sf::RenderWindow& window)
 
 void Menu::click_event(GameConfig* config, sf::Vector2i cursorpos)
 {
-    std::cout << "Cue: " << std::boolalpha << cue_opts.left.state  << " - " << std::boolalpha << cue_opts.right.state
-        << "\nDiff: " << std::boolalpha << diff_opts.left.state  << " - " << std::boolalpha << diff_opts.right.state
-        << "\nPlayers: " << std::boolalpha << single_player_option.state  << " - " << multi_player_option.state << std::endl;
-
     if(std::optional<bool> res = cue_opts.clicked(cursorpos)){
         if(*res){
             cue_opts.right.state = false;

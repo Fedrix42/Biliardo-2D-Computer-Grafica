@@ -7,8 +7,8 @@ class Pocket { // Buca
 public:
     Pocket(unsigned int id, sf::Vector2f table_size, sf::Vector2f offset);
     void draw(sf::RenderWindow& window);
-    sf::Vector2f getPosition();
-    float getRadius();
+    sf::Vector2f get_position();
+    float get_radius();
     void resize(sf::Vector2f table_size, sf::Vector2f offset);
 private:
     unsigned id;

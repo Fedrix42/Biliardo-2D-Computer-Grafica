@@ -30,13 +30,13 @@ public:
     const float REAL_TABLE_HEIGHT = 1.42;
     void reset();
     void reset_white();
-    std::vector<Ball*> getBallsOnTable();
-    std::vector<TableWall*> getWalls();
+    std::vector<Ball*> get_balls_on_table();
+    std::vector<TableWall*> get_walls();
     std::unordered_map<unsigned, BallStatus> balls;
     sf::Vector2f offset; // Posizione del tavolo rispetto il viewport
     void put_in_pocket(unsigned id); // Per il debug e testing
 private:
-    float frictionDeceleration = 30.3f; // Coefficiente di attrito
+    float friction_deceleration = 30.3f; // Coefficiente di attrito
     sf::RectangleShape shape;
     std::vector<Pocket> pockets; // Buche
     std::vector<TableWall> walls; // Muri

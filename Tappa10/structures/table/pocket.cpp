@@ -44,12 +44,12 @@ void Pocket::draw(sf::RenderWindow& window)
     window.draw(shape);
 }
 
-sf::Vector2f Pocket::getPosition()
+sf::Vector2f Pocket::get_position()
 {
     return shape.getPosition();
 }
 
-float Pocket::getRadius()
+float Pocket::get_radius()
 {
     return shape.getRadius();
 }

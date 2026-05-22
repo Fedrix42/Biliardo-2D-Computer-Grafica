@@ -54,7 +54,7 @@ void Ball::update(sf::Time current_t){
 
     sf::Time delta = current_t - last;
     // Decellerazione
-    speed = speedAfterTime(speed, friction_deceleration, delta);
+    speed = utils::physics::speedAfterTime(speed, friction_deceleration, delta);
 
 
     sf::Vector2f my_pos = get_position();
@@ -95,7 +95,7 @@ void Ball::update(sf::Time current_t){
             float against_start_velocity_alongn = c.collider_velocity_along_normal;
 
             // Calcolo la componente finale lungo la linea di impatto
-            float my_final_velocity_alongn = fnspeedA_1D(get_mass(), collider_ball->get_mass(), my_start_velocity_alongn, against_start_velocity_alongn);
+            float my_final_velocity_alongn = utils::monocollisions::finalSpeed1D_ofA(get_mass(), collider_ball->get_mass(), my_start_velocity_alongn, against_start_velocity_alongn);
             float my_delta_velocity_alongn = fabsf(my_final_velocity_alongn - my_start_velocity_alongn);
             my_delta_velocity_alongn = (my_delta_velocity_alongn < 0.0001f) ? 0.0f : my_delta_velocity_alongn;
             /* std::cout << to_string()
@@ -150,7 +150,7 @@ std::vector<sf::Vector2f> Ball::get_hitbox() const {
 
     for (int i = 0; i < sides; i++) {
         res.push_back(radius_vec + position);
-        radius_vec = rotate(radius_vec, angle, true);
+        radius_vec = utils::vectors_screen_space::rotate(radius_vec, angle, true);
     }
 
     return res;
@@ -184,8 +184,8 @@ void Ball::set_speed(sf::Vector2f speed){
 
 std::string Ball::to_string() const {
     return ("Ball["  + std::to_string(id) + " -- "
-                     + point_to_str(get_bound_box().position)
-                     + point_to_str(get_bound_box().size)
+                     + utils::point_to_str(get_bound_box().position)
+                     + utils::point_to_str(get_bound_box().size)
     + "]");
 }
 

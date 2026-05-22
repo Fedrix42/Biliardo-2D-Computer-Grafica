@@ -9,11 +9,10 @@ public:
     TableWall(unsigned id, Pocket* left, Pocket* right, sf::Vector2f direction);
     void draw(sf::RenderWindow& window);
     void resize();
-    sf::Vector2f getPosition() const;
-    void setPosition(sf::Vector2f pos);
+    sf::Vector2f get_position() const;
     std::string to_string() const;
-    sf::FloatRect getBoundBox() const;
-    std::vector<sf::Vector2f> getHitbox() const;
+    sf::FloatRect get_bound_box() const;
+    std::vector<sf::Vector2f> get_hitbox() const;
 private:
     sf::Vector2f direction;
     Pocket* left;

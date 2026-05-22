@@ -17,7 +17,7 @@ public:
     void draw(sf::RenderWindow& window);
     void shot(float speed);
     std::optional<Ball> advance(sf::Time current_t); // Restituisce una pallina virtuale da far collidere con le altre
-    bool isShooting();
+    bool is_shooting();
     void rotate(bool clockwise);
     Ball* anchor;
     CueType type = CueType::ANCHOR;
@@ -28,7 +28,7 @@ private:
     const float CUE_WIDTH = 8.0f;
     const float BODY_HEIGHT = 500.0f;
     const float animation_backward_speed = 30.0f; // Indietro di -5 px al secondo
-    const sf::Vector2f local_tip = {CUE_WIDTH / 2.0f, 0.0f};
+    const sf::Vector2f LOCAL_TIP = {CUE_WIDTH / 2.0f, 0.0f};
     const float ROTATION_ANGLE_DEGREE = 2;
     float mass = 0.5; // 0.5 kg
 
