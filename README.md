@@ -53,22 +53,25 @@ Si aumenta la velocità (potenza) del colpo tramite la **rotella del mouse** e s
 ## Pannello e UI
 ![Pannello del gioco](asset_per_readme/panel.png)
 
-Remaining --> Numero di palline rimanenti da imbucare (Eccetto la nera) 
-Mistakes --> Numero di falli commessi 
-Smooth / Striped --> Tipologia di palline da imbucare
+- Remaining --> Numero di palline rimanenti da imbucare (Eccetto la nera) 
+- Mistakes --> Numero di falli commessi 
+- Smooth / Striped --> Tipologia di palline da imbucare
+
+In alto è presente l'indicazione della modalità e delle opzioni di gioco e la velocità impostata del colpo.
 
 ## Tappe
 
-- Tappa01
-- Tappa02
-- Tappa03
-- Tappa04
-- Tappa05
-- Tappa06
-- Tappa07
-- Tappa08
-- Tappa09
-- Tappa10
+- Tappa01: realizzazione della struttura del progetto (file, namespace) ed input da catturare
+- Tappa02: implementazione iniziale della struttura stecca di tipologia "anchor"
+- Tappa03: dinamica iniziale per il colpo della stecca, accelerazione e stato del gioco
+- Tappa04: inizio di modellazione delle collisioni tramite definizione della bounding box di un oggetto e hitbox composta da segmenti con relativa funzione di intersezione
+- Tappa05: correzione di bug sulle collisioni, sfondo, iniziale pannello superiore e resizing
+- Tappa06: implementazione della stecca con doppia modalità e con texture e altri miglioramenti alla fisica
+- Tappa07: logica del gameplay e dei calcoli di fine round, swap dei giocatori e altro bug fixing
+- Tappa08: altra logica di gioco, migliore pannello superiore e controlli di fine round
+- Tappa09: implementazione delle due modalità a difficoltà aumentata
+- Tappa10: realizzazione del menù, bug fixes, refactoring e pulizia del codice
+- 
 
 
 
