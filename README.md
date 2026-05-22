@@ -61,17 +61,37 @@ In alto è presente l'indicazione della modalità e delle opzioni di gioco e la 
 
 ## Tappe
 
-- Tappa01: realizzazione della struttura del progetto (file, namespace) ed input da catturare
-- Tappa02: implementazione iniziale della struttura stecca di tipologia "anchor"
-- Tappa03: dinamica iniziale per il colpo della stecca, accelerazione e stato del gioco
-- Tappa04: inizio di modellazione delle collisioni tramite definizione della bounding box di un oggetto e hitbox composta da segmenti con relativa funzione di intersezione
-- Tappa05: correzione di bug sulle collisioni, sfondo, iniziale pannello superiore e resizing
-- Tappa06: implementazione della stecca con doppia modalità e con texture e altri miglioramenti alla fisica
-- Tappa07: logica del gameplay e dei calcoli di fine round, swap dei giocatori e altro bug fixing
-- Tappa08: altra logica di gioco, migliore pannello superiore e controlli di fine round
-- Tappa09: implementazione delle due modalità a difficoltà aumentata
-- Tappa10: realizzazione del menù, bug fixes, refactoring e pulizia del codice
-- 
+### Tappa01: realizzazione della struttura del progetto (file, namespace) ed input da catturare
+![Tappa01](asset_per_readme/tappa01.png)
+
+### Tappa02: implementazione iniziale della struttura stecca di tipologia "anchor"
+![Tappa02](asset_per_readme/tappa02.png)
+
+### Tappa03: dinamica iniziale per il colpo della stecca, accelerazione e stato del gioco
+![Tappa03](asset_per_readme/tappa03.png)
+
+### Tappa04: inizio di modellazione delle collisioni tramite definizione della bounding box di un oggetto e hitbox composta da segmenti con relativa funzione di intersezione
+![Tappa04](asset_per_readme/tappa04.png)
+
+### Tappa05: correzione di bug sulle collisioni, sfondo, iniziale pannello superiore e resizing
+![Tappa05](asset_per_readme/tappa05.png)
+
+### Tappa06: implementazione della stecca con doppia modalità e con texture e altri miglioramenti alla fisica
+![Tappa06](asset_per_readme/tappa06.png)
+
+### Tappa07: logica del gameplay e dei calcoli di fine round, swap dei giocatori e altro bug fixing
+![Tappa07](asset_per_readme/tappa07.png)
+
+### Tappa08: altra logica di gioco, migliore pannello superiore e controlli di fine round
+![Tappa08](asset_per_readme/tappa08.png)
+
+### Tappa09: implementazione delle due modalità a difficoltà aumentata
+![Tappa09](asset_per_readme/tappa09.png)
+
+### Tappa10: realizzazione del menù, bug fixes, refactoring e pulizia del codice
+![Tappa10](asset_per_readme/tappa10.png)
+![Tappa10_2](asset_per_readme/tappa10_2.png)
+
 
 
 
