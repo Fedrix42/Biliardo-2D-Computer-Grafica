@@ -17,7 +17,6 @@ AssetMGR::AssetMGR()
     this->table = new sf::Texture(ASSERT_FOLDER / "table.png");
     this->table_pockets = new sf::Texture(ASSERT_FOLDER / "pocket.png");
     this->table_walls = new sf::Texture(ASSERT_FOLDER / "table_wall.png");
-    this->cue = new sf::Texture(ASSERT_FOLDER / "cue.png");
 }
 
 
