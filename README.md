@@ -76,9 +76,9 @@ Ecco quindi come funzionano ora le collisioni:
 - La bounding box viene usata come strumento leggero e poco costoso computazionalmente per capire se vale la pena calcolare un eventuale collisione
 - Se le bounding box collidono, allora avviene il vero calcolo della collisione. Questo calcola sfrutta il principio della Continous Collision Detection simulando l'avanzamento della pallina nel tempo con step di 1ms in modo ad calcolare con precisione l'eventuale punto di impatto.
 - Se nel range 0 - 100ms con questo step di 1ms viene trovata una collisione, allora questa viene impostata nella pallina.
-- Ogni pallina mantiene un insieme ordinato di collisioni con altri oggetti in modo da supportare collisioni contemporanee. La collisione viene applicata nel momento giusto dalla pallina tramite il tempo di collisioni che è stato memorizzato. Praticamente la pallina sà che nel futuro dovrà applicare una collisione e appena arriva o supera il momento della collisione la applica. 
+- Ogni pallina mantiene un insieme ordinato di collisioni con altri oggetti in modo da supportare collisioni contemporanee. La collisione viene applicata nel momento giusto dalla pallina tramite il tempo di collisione che è stato memorizzato. Praticamente la pallina sà che nel futuro dovrà applicare una collisione e nel momento più opportuno la applica. 
 
-Una svolta che le collisioni erano ben funzionanti, ho deciso che sarebbe costato poco aggiungere la seconda modalità di stecca "FREE" sfruttando il fatto di poter modellare la punta della stecca come una pallina virtuale che si materializza sul tavolo con una velocità iniziale solo per un tick del gioco.
+Una svolta che le collisioni erano ben funzionanti, ho deciso che sarebbe costato poco aggiungere la seconda modalità di stecca "FREE", sfruttando il fatto di poter modellare la punta della stecca come una pallina virtuale che si materializza sul tavolo con una velocità iniziale solo per un tick del gioco.
 
 ## Tappe
 
