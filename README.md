@@ -44,6 +44,7 @@ Se dopo aver messo tutte le palline in buca si imbucano in contemporanea la bian
 ### Stecca
 - **Stecca libera**: si muove il centro della stecca tramite il cursore, si ruota la stecca con i tasti **A** e **D**.
 - **Stecca ancorata**: la stecca rimane ancorata alla pallina bianca, si ruota muovendo il cursore del mouse.
+
 Si aumenta la velocità (potenza) del colpo tramite la **rotella del mouse** e si colpisce la pallina con il tasto **K**.
 
 ## Modalità a difficoltà avanzata
