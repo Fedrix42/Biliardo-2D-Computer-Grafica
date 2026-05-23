@@ -38,6 +38,7 @@ Il biliardo può essere giocato nei seguenti modi:
 
 In entrambe le modalità se si imbuca la bianca si ottiene un fallo (mistake) e la pallina bianca viene riportata nella posizione iniziale.
 Il fallo avviene anche se si colpisce con la stecca una pallina non bianca (Possibile se si usa l'opzione stecca libera).
+Il numero massimo di falli di default è 3, se ci si arriva si perde la partita in automatico.
 Se dopo aver messo tutte le palline in buca si imbucano in contemporanea la bianca e la nera si perde la partita, come anche se si imbuca la nera prima delle altre.
 
 ## Comandi
@@ -59,6 +60,25 @@ Si aumenta la velocità (potenza) del colpo tramite la **rotella del mouse** e s
 - Smooth / Striped --> Tipologia di palline da imbucare
 
 In alto è presente l'indicazione della modalità e delle opzioni di gioco e la velocità impostata del colpo.
+
+## Difficoltà affrontate
+Durante lo svolgimento del progetto una delle parti più ostiche è stata quella delle collisioni.
+In particolare volevo avere un modello solido che evitasse il più possibile effetti di tunneling
+e che fosse anche ampliabile ad altri oggetti tramite l'implementazione di un metodo get_hitbox()
+che restituisce una approssimazione della forma dell'oggetto come poligono di segmenti.
+La collisione poteva poi quindi essere modellata come intersezione tra segmenti.
+
+Alla fine per ottenere risultati migliori ed evitare overengineering (In particolare nel calcolo delle normali), ho usato un approccio ibrido
+usando collisioni "custom" tra le palline che utilizzano la retta passante per i centri e collisioni tra segmenti tra pallina e muro.
+
+Ecco quindi come funzionano ora le collisioni:
+- Ogni pallina e muro ha una bounding box che rappresenta un'area rettangolare circostante all'oggetto
+- La bounding box viene usata come strumento leggero e poco costoso computazionalmente per capire se vale la pena calcolare un eventuale collisione
+- Se le bounding box collidono, allora avviene il vero calcolo della collisione. Questo calcola sfrutta il principio della Continous Collision Detection simulando l'avanzamento della pallina nel tempo con step di 1ms in modo ad calcolare con precisione l'eventuale punto di impatto.
+- Se nel range 0 - 100ms con questo step di 1ms viene trovata una collisione, allora questa viene impostata nella pallina.
+- Ogni pallina mantiene un insieme ordinato di collisioni con altri oggetti in modo da supportare collisioni contemporanee. La collisione viene applicata nel momento giusto dalla pallina tramite il tempo di collisioni che è stato memorizzato. Praticamente la pallina sà che nel futuro dovrà applicare una collisione e appena arriva o supera il momento della collisione la applica. 
+
+Una svolta che le collisioni erano ben funzionanti, ho deciso che sarebbe costato poco aggiungere la seconda modalità di stecca "FREE" sfruttando il fatto di poter modellare la punta della stecca come una pallina virtuale che si materializza sul tavolo con una velocità iniziale solo per un tick del gioco.
 
 ## Tappe
 
