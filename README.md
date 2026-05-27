@@ -9,10 +9,26 @@
 ![Biliardo](asset_per_readme/biliardo.png)
 
 ## Requisiti, compilazione ed esecuzione
-Versione di CMAKE recente (4.0 >), necessaria per la compilazione automatica
-di tutte le tappe (Utilizza GLOB_RECURSE per cercare ricorsivamente i sorgenti di ogni tappa).
+Per compilare il gioco è necessario installare i requisiti descritti nel tutorial di SFML 3.0 (https://www.sfml-dev.org/tutorials/3.0/getting-started/cmake/):
+```
+sudo apt update
+sudo apt install \
+    libxrandr-dev \
+    libxcursor-dev \
+    libxi-dev \
+    libudev-dev \
+    libfreetype-dev \
+    libflac-dev \
+    libvorbis-dev \
+    libgl1-mesa-dev \
+    libegl1-mesa-dev \
+    libfreetype-dev
+```
 
-Effettuare il clone della repository o scaricarla come file zip.
+Serve utilizza una versione di CMAKE recente (4.0 >) in quanto la compilazione automatica
+di tutte le tappe utilizza la direttiva GLOB_RECURSE per cercare ricorsivamente i sorgenti di ogni tappa.
+
+Dopo aver installato le dipendenze, effettuare il clone della repository o scaricarla come file zip.
 Sulla cartella principale della repository compilare con:
 ```
 cmake -B build
