@@ -38,7 +38,7 @@ Table::Table(sf::Vector2f table_size, sf::Vector2f offset)
 
     // Palline costruite con ordine triangolare
     float pocket_radius = pockets.at(0).get_radius();
-    balls.insert({BallIDRange::WHITE, BallStatus(Ball(BallIDRange::WHITE, pocket_radius, friction_deceleration, {0,0}))});
+    balls.insert({BallIDRange::WHITE, BallStatus(Ball(BallIDRange::WHITE, pocket_radius, friction_deceleration, shape.getPosition() + sf::Vector2f{shape.getSize().x / 3.0f, shape.getSize().y / 2.0f}))});
     balls.insert({BallIDRange::BLACK, BallStatus(Ball(BallIDRange::BLACK, pocket_radius, friction_deceleration, {0,0}))});
 
     for (unsigned id = BallIDRange::SMOOTH_START; id <= BallIDRange::SMOOTH_STOP; id++) {
@@ -77,8 +77,8 @@ void Table::reset(){
         for (int i = 0; i <= j; ++i) {
             if(it->second.ball.get_id() == BallIDRange::WHITE){
                 reset_white();
-                ++it;
-            }
+                it++;
+            } 
             std::cout << "Resetting Ball " << it->second.ball.get_id() << std::endl;
             it->second.pocket = nullptr;
             it->second.counted = false;
@@ -90,7 +90,7 @@ void Table::reset(){
             pos *= (2 * it->second.ball.get_radius() + 20); // Scalo per diametro + margine
             pos += triangle_center; // Traslo su triangolo
             it->second.ball.set_position(pos);
-            ++it;
+            it++;
         }
     }
 }
@@ -98,6 +98,7 @@ void Table::reset(){
 void Table::reset_white(){
     std::cout << "Resetting Ball " << BallIDRange::WHITE << std::endl;
     auto& wentry = balls.at(BallIDRange::WHITE);
+    std::cout << "WHITE POS BEFORE RESET" << utils::point_to_str(wentry.ball.get_position()) << std::endl;
     wentry.pocket = nullptr;
     wentry.counted = false;
     wentry.ball.set_speed({0.0f, 0.0f});
@@ -107,6 +108,7 @@ void Table::reset_white(){
             shape.getSize().y / 2.0f
         }
     );
+    std::cout << "WHITE POS AFTER RESET" << utils::point_to_str(wentry.ball.get_position()) << std::endl;
     white.set_speed({0, 0});
 }
 

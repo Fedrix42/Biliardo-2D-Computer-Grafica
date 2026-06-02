@@ -67,8 +67,8 @@ void GameState::resize(sf::Vector2u size){
 
     float target_rateo = 2.0f / 1.0f;
     float current_rateo = static_cast<float>(size.x - (2.0f * MIN_TABLE_MARGIN.x)) / static_cast<float>(size.y - panel.getHeight() - (2 * MIN_TABLE_MARGIN.y));
-    sf::Vector2f table_offset;
-    sf::Vector2f table_size;
+    sf::Vector2f table_offset = {0, 0};
+    sf::Vector2f table_size = {0, 0};
 
     if(target_rateo > current_rateo){ // Troppo alto
         table_size.x = free_space.size.x;
