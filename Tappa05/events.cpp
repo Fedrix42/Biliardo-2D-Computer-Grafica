@@ -9,6 +9,7 @@ void handle_close(sf::RenderWindow& window, GameState& state)
 void handle_resize(const sf::Event::Resized* resized, sf::RenderWindow& window, GameState& state)
 {
     if(resized->size.x == 0 || resized->size.y == 0) return;
+    window.setSize(resized->size);
     window.setView(sf::View(sf::FloatRect({0, 0}, {static_cast<float>(resized->size.x), static_cast<float>(resized->size.y)})));
     state.resize(resized->size);
 }

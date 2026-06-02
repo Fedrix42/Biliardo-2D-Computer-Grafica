@@ -21,6 +21,7 @@ void handle_close(sf::RenderWindow& window, GameState& state)
 void handle_resize(const sf::Event::Resized* resized, sf::RenderWindow& window, GameState& state, sf::Sprite* background, Menu& menu)
 {
     if(resized->size.x == 0 || resized->size.y == 0) return;
+    window.setSize(resized->size);
     window.setView(sf::View(sf::FloatRect({0, 0}, {static_cast<float>(resized->size.x), static_cast<float>(resized->size.y)})));
     // Dimensione texture
     sf::Vector2u textureSize = background->getTexture().getSize();
