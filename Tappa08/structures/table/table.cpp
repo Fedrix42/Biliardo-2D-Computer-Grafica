@@ -39,7 +39,7 @@ Table::Table(sf::Vector2f table_size, sf::Vector2f offset)
 
     // Palline costruite con ordine triangolare
     float pocket_radius = pockets.at(0).getRadius();
-    balls.insert({BallIDRange::WHITE, BallStatus(Ball(BallIDRange::WHITE, pocket_radius, frictionDeceleration, {0,0}))});
+    balls.insert({BallIDRange::WHITE, BallStatus(Ball(BallIDRange::WHITE, pocket_radius, frictionDeceleration, shape.getPosition() + sf::Vector2f{shape.getSize().x / 3.0f, shape.getSize().y / 2.0f}))});
     balls.insert({BallIDRange::BLACK, BallStatus(Ball(BallIDRange::BLACK, pocket_radius, frictionDeceleration, {0,0}))});
 
     for (unsigned id = BallIDRange::SMOOTH_START; id <= BallIDRange::SMOOTH_STOP; id++) {
@@ -63,8 +63,7 @@ void Table::reset()
     for (int j = 0; j < 5; ++j) {
         for (int i = 0; i <= j; ++i) {
             if(it->second.ball.getID() == BallIDRange::WHITE){
-                reset_white();
-                ++it;
+                it++;
             }
             it->second.pocket = nullptr;
             it->second.counted = false;
@@ -75,9 +74,10 @@ void Table::reset()
             pos *= (2 * it->second.ball.getRadius() + 30);
             pos += triangle_center;
             it->second.ball.setPosition(pos);
-            ++it;
+            it++;
         }
     }
+    reset_white();
 }
 
 void Table::reset_white()
