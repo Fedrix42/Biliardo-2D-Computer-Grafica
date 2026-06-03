@@ -1,6 +1,7 @@
 #ifndef GAMECONFIG_H
 #define GAMECONFIG_H
 #include "../structures/cue.h"
+#include <sstream>
 
 enum Gamemode {
     SINGLE_PLAYER,
